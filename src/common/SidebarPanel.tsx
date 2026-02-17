@@ -9,7 +9,7 @@ import {
   LayoutDashboard,
   UserRoundCheck,
   FileText,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -36,8 +36,8 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
         isDark ? "border-gray-700" : "border-gray-200"
       } ${collapsed ? "items-center" : "items-start px-4"}`}
     >
-      <div className='flex flex-col w-full'>
-        {!collapsed && <h1 className='text-xl font-bold mb-4'>Admin Panel</h1>}
+      <div className="flex flex-col w-full">
+        {!collapsed && <h1 className="text-xl font-bold mb-4">Admin Panel</h1>}
 
         <div
           className={`flex ${
@@ -46,7 +46,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
         >
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className='cursor-pointer transition-transform duration-300'
+            className="cursor-pointer transition-transform duration-300"
           >
             {!collapsed ? (
               <ArrowLeftToLine size={22} />
@@ -56,7 +56,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
           </button>
         </div>
 
-        <nav className='flex flex-col gap-4 w-full'>
+        <nav className="flex flex-col gap-4 w-full">
           <Link
             href={routes.dashboard}
             onClick={() => setActive("dashboard")}
@@ -114,7 +114,7 @@ ${
         </nav>
       </div>
 
-      <div className='mt-auto w-full pb-6 flex justify-center'>
+      <div className="mt-auto w-full pb-6 flex justify-center">
         <button
           onClick={() => {
             const newTheme = theme === "light" ? "dark" : "light";

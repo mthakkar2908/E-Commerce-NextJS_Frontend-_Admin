@@ -4,7 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table";
 
 import {
@@ -13,7 +13,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
@@ -23,7 +23,7 @@ interface DataTableProps<TData, TValue> {
 
 export function Subscribers<TData, TValue>({
   columns,
-  data
+  data,
 }: DataTableProps<TData, TValue>) {
   const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
@@ -31,12 +31,12 @@ export function Subscribers<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <div className='p-8'>
-      <div className='max-w-6xl'>
+    <div className="p-8">
+      <div className="max-w-6xl">
         <h1
           className={`text-3xl font-bold mb-4 ${
             isDark ? "text-blue-400" : "text-gray-800"
@@ -58,7 +58,7 @@ export function Subscribers<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -77,7 +77,7 @@ export function Subscribers<TData, TValue>({
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -87,7 +87,7 @@ export function Subscribers<TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className='h-24 text-center'
+                    className="h-24 text-center"
                   >
                     No results.
                   </TableCell>

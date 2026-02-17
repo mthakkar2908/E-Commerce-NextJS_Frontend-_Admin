@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setTheme } from "@/src/redux/slices/themeSlice";
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {

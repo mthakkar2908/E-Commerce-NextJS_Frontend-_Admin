@@ -1,4 +1,3 @@
-
 interface ApiConfig {
   baseURL: string;
   timeout: number;
@@ -26,7 +25,7 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
 

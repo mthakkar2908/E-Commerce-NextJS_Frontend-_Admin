@@ -24,36 +24,38 @@ const initialState: AuthState = {
   token: undefined,
 };
 
-export const loginThunk = createAsyncThunk<User, LoginRequest, { rejectValue: string }>(
-  "auth/login",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await authApi.login(credentials);
-      if (response.success && response.user) {
-        return response.user;
-      }
-      return rejectWithValue(response.message || "Login failed");
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue("An error occurred during login");
+export const loginThunk = createAsyncThunk<
+  User,
+  LoginRequest,
+  { rejectValue: string }
+>("auth/login", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await authApi.login(credentials);
+    if (response.success && response.user) {
+      return response.user;
     }
+    return rejectWithValue(response.message || "Login failed");
+  } catch (error) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    }
+    return rejectWithValue("An error occurred during login");
   }
-);
+});
 
-export const logoutThunk = createAsyncThunk<void, void, { rejectValue: string }>(
-  "auth/logout",
-  async (_, { }) => {
-    try {
-      await authApi.logout();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Logout error:", error);
-      }
+export const logoutThunk = createAsyncThunk<
+  void,
+  void,
+  { rejectValue: string }
+>("auth/logout", async (_, {}) => {
+  try {
+    await authApi.logout();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Logout error:", error);
     }
   }
-);
+});
 
 const authSlice = createSlice({
   name: "auth",

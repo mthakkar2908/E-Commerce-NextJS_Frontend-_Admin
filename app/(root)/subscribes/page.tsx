@@ -8,18 +8,18 @@ interface Subscriber {
 
 const data: Subscriber[] = [
   { name: "John", email: "john@gmail.com" },
-  { name: "Rahul", email: "rahul@gmail.com" }
+  { name: "Rahul", email: "rahul@gmail.com" },
 ];
 
 const columns: ColumnDef<Subscriber>[] = [
   {
     accessorKey: "name",
-    header: "Name"
+    header: "Name",
   },
   {
     accessorKey: "email",
-    header: "Email"
-  }
+    header: "Email",
+  },
 ];
 
 export default function SubscribesPage() {

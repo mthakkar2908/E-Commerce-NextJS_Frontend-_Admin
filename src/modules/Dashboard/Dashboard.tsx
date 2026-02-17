@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import { useAppSelector } from "@/src/redux/hooks";
 
@@ -16,20 +16,20 @@ const cards = [
     title: "Users",
     description: "Total registered users",
     content: "1500",
-    footer: "Updated today"
+    footer: "Updated today",
   },
   {
     title: "Products",
     description: "Total Products",
     content: "320",
-    footer: "Updated 1 hour ago"
+    footer: "Updated 1 hour ago",
   },
   {
     title: "Posts",
     description: "Total Posts",
     content: "732",
-    footer: "Updated 4 hour ago"
-  }
+    footer: "Updated 4 hour ago",
+  },
 ];
 
 const Dashboard = () => {
@@ -49,8 +49,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='p-8'>
-      <div className='max-w-6xl'>
+    <div className="p-8">
+      <div className="max-w-6xl">
         <h1
           className={`text-3xl font-bold mb-4 ${
             isDark ? "text-blue-400" : "text-gray-800"
@@ -63,15 +63,15 @@ const Dashboard = () => {
             isDark ? "bg-gray-700 text-gray-100" : "bg-white text-gray-600"
           }`}
         >
-          <div className='flex gap-3 flex-wrap'>
+          <div className="flex gap-3 flex-wrap">
             {cards.map((card, index) => (
-              <Card key={index} className='w-75'>
+              <Card key={index} className="w-75">
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
                   <CardDescription>{card.description}</CardDescription>
                   <CardAction
                     onClick={() => handleView(card.title)}
-                    className='cursor-pointer'
+                    className="cursor-pointer"
                   >
                     View
                   </CardAction>
