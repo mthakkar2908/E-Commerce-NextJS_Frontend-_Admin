@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { clearError, loginThunk, logoutThunk } from "./redux/slices/authSlice";
+import { clearError, loginThunk } from "./redux/slices/authSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,11 +19,20 @@ const LoginPage = () => {
     (state) => state.auth,
   );
 
+  // const redirectDashboard = async () => {
+  //   if (isAuthenticated && user) {
+  //     setRedirectLogin(true);
+  //     console.log("Authenticated", isAuthenticated);
+  //     await router.push("/dashboard");
+  //     setRedirectLogin(false);
+  //   }
+  // };
   useEffect(() => {
     if (isAuthenticated && user) {
-      router.push("/dashboard");
+      console.log(user);
+      router.replace("/dashboard");
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,11 +49,6 @@ const LoginPage = () => {
       console.error("Login failed:", result.payload);
     }
   };
-
-  const handleLogout = async () => {
-    await dispatch(logoutThunk());
-  };
-
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="mx-10 my-10 bg-amber-100 text-[#000000] w-150 h-auto rounded-lg shadow-lg p-8">

@@ -6,6 +6,7 @@ export interface User {
   email: string;
   name?: string;
   role?: string;
+  token?: string;
 }
 
 interface AuthState {
@@ -31,8 +32,8 @@ export const loginThunk = createAsyncThunk<
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
     const response = await authApi.login(credentials);
-    if (response.success && response.user) {
-      return response.user;
+    if (response.admin) {
+      return response.admin;
     }
     return rejectWithValue(response.message || "Login failed");
   } catch (error) {
@@ -80,6 +81,7 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
         state.error = null;
+        state.token = action.payload?.token;
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;

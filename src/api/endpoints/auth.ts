@@ -6,17 +6,19 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  success: boolean;
   message: string;
-  user: {
-    id: string;
+  admin: {
+    adminId: string;
     email: string;
-    name?: string;
-    role?: string;
+    token?: string;
   };
-  token?: string;
 }
 
+export interface TotalCountResponse {
+  totalUsers: number;
+  totalProducts: number;
+  totalPosts: number;
+}
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -41,6 +43,9 @@ export interface LogoutResponse {
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     return apiClient.post<LoginResponse>("/admin/signIn", credentials);
+  },
+  totalCount: async (): Promise<TotalCountResponse> => {
+    return apiClient.get<TotalCountResponse>("/admin/count");
   },
 
   register: async (data: RegisterRequest): Promise<RegisterResponse> => {

@@ -1,8 +1,9 @@
+import { store } from "../redux/store";
+
 interface ApiConfig {
   baseURL: string;
   timeout: number;
 }
-
 const apiConfig: ApiConfig = {
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000/api",
   timeout: 10000,
@@ -18,8 +19,11 @@ class ApiClient {
   }
 
   private getHeaders(): HeadersInit {
+    const state = store.getState();
+    const token = state.auth.token;
     return {
       "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   }
 

@@ -9,25 +9,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAppSelector } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { fetchCounts } from "@/src/redux/slices/totalSlice";
+import { useEffect } from "react";
 
 const cards = [
   {
     title: "Users",
     description: "Total registered users",
-    content: "1500",
     footer: "Updated today",
   },
   {
     title: "Products",
     description: "Total Products",
-    content: "320",
     footer: "Updated 1 hour ago",
   },
   {
     title: "Posts",
     description: "Total Posts",
-    content: "732",
     footer: "Updated 4 hour ago",
   },
 ];
@@ -35,6 +34,22 @@ const cards = [
 const Dashboard = () => {
   const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
+  const dispatch = useAppDispatch();
+  const { totalPosts, totalProducts, totalUsers } = useAppSelector(
+    (state) => state.count,
+  );
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const result = await dispatch(fetchCounts()).unwrap();
+        console.log("Counts:", result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getData();
+  }, [dispatch]);
 
   const handleView = async (name: string) => {
     if (name === "Users") {
@@ -78,7 +93,13 @@ const Dashboard = () => {
                 </CardHeader>
 
                 <CardContent>
-                  <p>{card.content}</p>
+                  <p>
+                    {card.title === "Users"
+                      ? totalUsers
+                      : card.title === "Products"
+                        ? totalProducts
+                        : totalPosts}
+                  </p>
                 </CardContent>
 
                 <CardFooter>
