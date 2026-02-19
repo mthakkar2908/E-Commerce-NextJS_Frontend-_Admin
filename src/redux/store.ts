@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import themeReducer from "./slices/themeSlice";
 import countReducer from "./slices/totalSlice";
+import productReducer from "./slices/productSlice";
 import {
   persistStore,
   persistReducer,
@@ -13,11 +14,13 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { setStore } from "./storeAccessor";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   count: countReducer,
   theme: themeReducer,
+  product: productReducer,
 });
 
 const persistConfig = {
@@ -37,6 +40,8 @@ export const store = configureStore({
       },
     }),
 });
+
+setStore(store);
 
 export const persistor = persistStore(store);
 

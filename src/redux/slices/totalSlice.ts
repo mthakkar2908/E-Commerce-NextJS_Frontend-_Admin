@@ -42,6 +42,34 @@ export const fetchCounts = createAsyncThunk<
   }
 });
 
+export const getAllUsers = createAsyncThunk(
+  "users/getAllUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await authApi.getUsers();
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to fetch Users",
+      );
+    }
+  },
+);
+
+export const deleteUsers = createAsyncThunk(
+  "users/deleteUsers",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.deleteUser(id);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to delete User",
+      );
+    }
+  },
+);
+
 const countSlice = createSlice({
   name: "count",
   initialState,

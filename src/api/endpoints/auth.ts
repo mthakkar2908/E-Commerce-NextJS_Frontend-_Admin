@@ -1,4 +1,9 @@
 import { apiClient } from "../client";
+import {
+  DeleteUserResponse,
+  GetAllProductsResponse,
+  getUsersResponse,
+} from "./interfaces";
 
 export interface LoginRequest {
   email: string;
@@ -62,5 +67,15 @@ export const authApi = {
 
   refreshToken: async (): Promise<{ token: string }> => {
     return apiClient.post<{ token: string }>("/auth/refresh");
+  },
+
+  getUsers: async (): Promise<getUsersResponse> => {
+    return apiClient.get<getUsersResponse>("/users");
+  },
+  deleteUser: async (id: string): Promise<DeleteUserResponse> => {
+    return apiClient.delete<DeleteUserResponse>(`/users/${id}`);
+  },
+  getProducts: async (): Promise<GetAllProductsResponse> => {
+    return apiClient.get<GetAllProductsResponse>("/products");
   },
 };

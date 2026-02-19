@@ -1,4 +1,4 @@
-import { store } from "../redux/store";
+import { getStore } from "../redux/storeAccessor";
 
 interface ApiConfig {
   baseURL: string;
@@ -19,7 +19,7 @@ class ApiClient {
   }
 
   private getHeaders(): HeadersInit {
-    const state = store.getState();
+    const state = getStore().getState();
     const token = state.auth.token;
     return {
       "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
@@ -11,7 +12,10 @@ import {
 } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { fetchCounts } from "@/src/redux/slices/totalSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import UsersDialog from "./UsersDialog";
+import ProductsDialog from "./ProductsDialog";
+import PostsDialog from "./PostsDialog";
 
 const cards = [
   {
@@ -34,32 +38,36 @@ const cards = [
 const Dashboard = () => {
   const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
+  const [openViewForUsers, setOpenViewForUsers] = useState(false);
+  const [openViewForProducts, setOpenViewForProducts] = useState(false);
+  const [openViewForPosts, setOpenViewForPosts] = useState(false);
   const dispatch = useAppDispatch();
   const { totalPosts, totalProducts, totalUsers } = useAppSelector(
     (state) => state.count,
   );
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const result = await dispatch(fetchCounts()).unwrap();
-        console.log("Counts:", result);
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
+  const getData = async () => {
+    try {
+      const result = await dispatch(fetchCounts()).unwrap();
+      console.log("Counts:", result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     getData();
   }, [dispatch]);
 
   const handleView = async (name: string) => {
     if (name === "Users") {
-      console.log("Users View Click");
+      setOpenViewForUsers(true);
     }
     if (name === "Products") {
-      console.log("Products View click");
+      setOpenViewForProducts(true);
     }
     if (name === "Posts") {
-      console.log("Posts View click");
+      setOpenViewForPosts(true);
     }
   };
 
@@ -110,6 +118,25 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {openViewForUsers && (
+        <UsersDialog
+          open={openViewForUsers}
+          setOpen={setOpenViewForUsers}
+          onDeleteSuccess={getData}
+        />
+      )}
+
+      {openViewForProducts && (
+        <ProductsDialog
+          open={openViewForProducts}
+          setOpen={setOpenViewForProducts}
+        />
+      )}
+
+      {setOpenViewForPosts && (
+        <PostsDialog open={openViewForPosts} setOpen={setOpenViewForPosts} />
+      )}
     </div>
   );
 };
