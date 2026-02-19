@@ -1,8 +1,13 @@
 import { apiClient } from "../client";
 import {
+  DeletePostsResponse,
+  DeleteProductResponse,
   DeleteUserResponse,
+  GetAllPostResponse,
   GetAllProductsResponse,
+  GetAllSubscriberData,
   getUsersResponse,
+  SearchProductResponse,
 } from "./interfaces";
 
 export interface LoginRequest {
@@ -77,5 +82,22 @@ export const authApi = {
   },
   getProducts: async (): Promise<GetAllProductsResponse> => {
     return apiClient.get<GetAllProductsResponse>("/products");
+  },
+  searchProducts: async (query: string): Promise<SearchProductResponse> => {
+    return apiClient.get<SearchProductResponse>(
+      `/products/searchProducts?q=${query}`,
+    );
+  },
+  deleteProducts: async (id: string): Promise<DeleteProductResponse> => {
+    return apiClient.delete<DeleteProductResponse>(`/products/${id}`);
+  },
+  getPosts: async (): Promise<GetAllPostResponse[]> => {
+    return apiClient.get<GetAllPostResponse[]>("/posts");
+  },
+  deletePost: async (id: string): Promise<DeletePostsResponse> => {
+    return apiClient.delete<DeletePostsResponse>(`/posts/deletePost/${id}`);
+  },
+  getSubscriberData: async (): Promise<GetAllSubscriberData[]> => {
+    return apiClient.get<GetAllSubscriberData[]>(`/email-signup`);
   },
 };

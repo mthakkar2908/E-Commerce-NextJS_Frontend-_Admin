@@ -22,6 +22,32 @@ export const getAllProducts = createAsyncThunk(
   },
 );
 
+export const searchProductsByQuery = createAsyncThunk(
+  "product/searchProductsByQuery",
+  async (query: string, { rejectWithValue }) => {
+    try {
+      const resp = await authApi.searchProducts(query);
+      return resp;
+    } catch {
+      return rejectWithValue("failed to search products.");
+    }
+  },
+);
+
+export const deleteProduct = createAsyncThunk(
+  "users/deleteProduct",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.deleteProducts(id);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to delete Product",
+      );
+    }
+  },
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,

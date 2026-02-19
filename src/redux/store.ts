@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import themeReducer from "./slices/themeSlice";
 import countReducer from "./slices/totalSlice";
 import productReducer from "./slices/productSlice";
+import postReducer from "./slices/postSlice";
 import {
   persistStore,
   persistReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   count: countReducer,
   theme: themeReducer,
   product: productReducer,
+  post: postReducer,
 });
 
 const persistConfig = {

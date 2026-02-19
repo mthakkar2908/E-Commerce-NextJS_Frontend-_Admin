@@ -1,16 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { GetAllProductsResponse } from "@/src/api/endpoints/interfaces";
+import useDebounce from "@/src/hooks/useDebounce";
 import { useAppDispatch } from "@/src/redux/hooks";
-import { getAllProducts } from "@/src/redux/slices/productSlice";
+import {
+  deleteProduct,
+  getAllProducts,
+  searchProductsByQuery,
+} from "@/src/redux/slices/productSlice";
 import { Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface ViewProductsProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDeleteSuccess: () => void;
 }
 
-const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
+const ProductsDialog: React.FC<ViewProductsProps> = ({
+  open,
+  setOpen,
+  onDeleteSuccess,
+}) => {
   const [products, setProducts] = useState<
     {
       order: number;
@@ -22,7 +33,23 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
     }[]
   >();
   const dispatch = useAppDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const debounce = useDebounce(searchTerm, 500);
 
+  useEffect(() => {
+    async function fetchFiltredData() {
+      try {
+        const response = await dispatch(
+          searchProductsByQuery(debounce),
+        ).unwrap();
+        setProducts(Array.isArray(response) ? response : [response]);
+      } catch (error) {
+        toast.error((error as string) ?? "Failed to fetch filtered products");
+      }
+    }
+
+    fetchFiltredData();
+  }, [debounce, dispatch]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -36,10 +63,31 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
     fetchProducts();
   }, [dispatch]);
 
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      const res = await dispatch(deleteProduct(id)).unwrap();
+      toast.success(res.message ?? "product deleted successfully.");
+      onDeleteSuccess();
+      setOpen(false);
+    } catch (error) {
+      toast.error((error as any) ?? "faild to delete Product");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-200">
         <DialogTitle>Products List</DialogTitle>
+
+        <div>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
 
         <div className="overflow-x-auto mt-4">
           {products?.length === 0 ? (
@@ -56,15 +104,20 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
               </thead>
               <tbody>
                 {products?.map((product) => (
-                  <tr key={product._id} className="hover:bg-gray-700">
-                    <td className="p-2 border">{product.name}</td>
-                    <td className="p-2 border">{product.about_product}</td>
-                    <td className="p-2 border">₹ {product.price}</td>
+                  <tr key={product?._id} className="hover:bg-gray-700">
+                    <td className="p-2 border">{product?.name}</td>
+                    <td className="p-2 border">{product?.about_product}</td>
+                    <td className="p-2 border">₹ {product?.price}</td>
                     <td className="p-2 border">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 text-center">{product.quan}</div>
+                        <div className="flex-1 text-center">
+                          {product?.quan}
+                        </div>
                         <div className="ml-2 flex">
-                          <button className="bg-gray-500 gap-2 flex rounded-3xl px-2 py-1 text-xs cursor-pointer">
+                          <button
+                            onClick={() => handleDeleteProduct(product?._id)}
+                            className="bg-gray-500 gap-2 flex rounded-3xl px-2 py-1 text-xs cursor-pointer"
+                          >
                             <Trash2 size={15} /> Delete
                           </button>
                         </div>

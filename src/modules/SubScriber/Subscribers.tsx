@@ -1,12 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useAppSelector } from "@/src/redux/hooks";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import {
   Table,
   TableBody,
@@ -15,28 +10,43 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { getSubscriberData } from "@/src/redux/slices/postSlice";
+import { GetAllSubscriberData } from "@/src/api/endpoints/interfaces";
+import toast from "react-hot-toast";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface Subscriber {
+  name: string;
+  email: string;
 }
 
-export function Subscribers<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const theme = useAppSelector((state) => state.theme.mode);
-  const isDark = theme === "dark";
+interface SubscribersProps {
+  data: Subscriber[];
+}
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+export function Subscribers({ data }: SubscribersProps) {
+  const theme = useAppSelector((state) => state.theme.mode);
+  const [subData, setSubData] = useState<GetAllSubscriberData[]>([]);
+  const isDark = theme === "dark";
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchSubscribersData = async () => {
+      try {
+        const res = await dispatch(getSubscriberData()).unwrap();
+        setSubData(res);
+        console.log("Response Subscribe data", res);
+      } catch (error) {
+        toast.error((error as any) ?? "Failed to fetch Subscriber data");
+      }
+    };
+
+    fetchSubscribersData();
+  }, [dispatch]);
 
   return (
     <div className="p-8">
-      <div className="max-w-6xl">
+      <div className="max-w-4xl">
         <h1
           className={`text-3xl font-bold mb-4 ${
             isDark ? "text-blue-400" : "text-gray-800"
@@ -44,51 +54,33 @@ export function Subscribers<TData, TValue>({
         >
           Subscribe List
         </h1>
+
         <div
-          className={`overflow-hidden rounded-md ${isDark ? "border" : "border border-black"}`}
+          className={`rounded-md border ${
+            isDark ? "border-gray-700" : "border-gray-300"
+          }`}
         >
           <Table>
             <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableHead>Email Registered</TableHead>
+                <TableHead>Registered By (Name)</TableHead>
+                <TableHead>Registered By (Email)</TableHead>
+              </TableRow>
             </TableHeader>
+
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
+              {subData.length > 0 ? (
+                subData.map((subscriber, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{subscriber.email}</TableCell>
+                    <TableCell>{subscriber.userId.name}</TableCell>
+                    <TableCell>{subscriber.userId.email}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={2} className="text-center py-6">
                     No results.
                   </TableCell>
                 </TableRow>

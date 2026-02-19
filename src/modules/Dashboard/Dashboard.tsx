@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [openViewForUsers, setOpenViewForUsers] = useState(false);
   const [openViewForProducts, setOpenViewForProducts] = useState(false);
   const [openViewForPosts, setOpenViewForPosts] = useState(false);
+
   const dispatch = useAppDispatch();
   const { totalPosts, totalProducts, totalUsers } = useAppSelector(
     (state) => state.count,
@@ -48,8 +49,7 @@ const Dashboard = () => {
 
   const getData = async () => {
     try {
-      const result = await dispatch(fetchCounts()).unwrap();
-      console.log("Counts:", result);
+      await dispatch(fetchCounts()).unwrap();
     } catch (error) {
       console.error(error);
     }
@@ -94,7 +94,7 @@ const Dashboard = () => {
                   <CardDescription>{card.description}</CardDescription>
                   <CardAction
                     onClick={() => handleView(card.title)}
-                    className="cursor-pointer"
+                    className="cursor-pointer bg-gray-400 px-2 py-2 rounded-2xl hover:bg-gray-500"
                   >
                     View
                   </CardAction>
@@ -131,11 +131,16 @@ const Dashboard = () => {
         <ProductsDialog
           open={openViewForProducts}
           setOpen={setOpenViewForProducts}
+          onDeleteSuccess={getData}
         />
       )}
 
       {setOpenViewForPosts && (
-        <PostsDialog open={openViewForPosts} setOpen={setOpenViewForPosts} />
+        <PostsDialog
+          open={openViewForPosts}
+          setOpen={setOpenViewForPosts}
+          onDeleteSuccess={getData}
+        />
       )}
     </div>
   );
