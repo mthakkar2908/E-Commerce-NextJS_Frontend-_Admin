@@ -94,3 +94,45 @@ export interface InviteUserRequest {
   userId: string;
   email: string;
 }
+
+export interface getPrivacyText {
+  _id: string;
+  PrivacyPolicyText: string;
+}
+
+export interface PrivacyPolicyResponse {
+  message: string;
+  data: {
+    _id: string;
+    PrivacyPolicyText: string;
+  };
+}
+
+export interface DeletePrivacyResponse {
+  message: string;
+  deletedPrivacy: {
+    _id: string;
+    PrivacyPolicyText: string;
+  };
+}
+
+export interface getTermsText {
+  _id: string;
+  TermsConditionsText: string;
+}
+
+export interface TermsConditionResponse {
+  message: string;
+  data: {
+    _id: string;
+    TermsConditionsText: string;
+  };
+}
+
+export interface DeleteTermsResponse {
+  message: string;
+  deletedTerms: {
+    _id: string;
+    TermsConditionsText: string;
+  };
+}

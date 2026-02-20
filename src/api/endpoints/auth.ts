@@ -1,15 +1,21 @@
 import { apiClient } from "../client";
 import {
   DeletePostsResponse,
+  DeletePrivacyResponse,
   DeleteProductResponse,
+  DeleteTermsResponse,
   DeleteUserResponse,
   GetAllPostResponse,
   GetAllProductsResponse,
   GetAllSubscriberData,
+  getPrivacyText,
+  getTermsText,
   getUsersResponse,
   InviteUserRequest,
   InviteUsersResponse,
+  PrivacyPolicyResponse,
   SearchProductResponse,
+  TermsConditionResponse,
   UnSubscribeChannel,
   UnsubscribeChannelRequest,
 } from "./interfaces";
@@ -118,6 +124,36 @@ export const authApi = {
     return apiClient.post<InviteUsersResponse>(
       "/email-signup?type=invite",
       data,
+    );
+  },
+  getPrivacyText: async (): Promise<getPrivacyText[]> => {
+    return apiClient.get<getPrivacyText[]>(`/privacy-policy/getText`);
+  },
+  addorUpdatePrivacyPolicy: async (
+    PrivacyPolicyText: string,
+  ): Promise<PrivacyPolicyResponse> => {
+    return apiClient.post<PrivacyPolicyResponse>(`/privacy-policy`, {
+      PrivacyPolicyText,
+    });
+  },
+  deletePrivacy: async (id: string): Promise<DeletePrivacyResponse> => {
+    return apiClient.delete<DeletePrivacyResponse>(
+      `/privacy-policy/delete-privacy/${id}`,
+    );
+  },
+  getTermsText: async (): Promise<getTermsText[]> => {
+    return apiClient.get<getTermsText[]>(`/terms-conditions/getText`);
+  },
+  addorUpdateTermsCondition: async (
+    TermsConditionsText: string,
+  ): Promise<TermsConditionResponse> => {
+    return apiClient.post<TermsConditionResponse>(`/terms-conditions`, {
+      TermsConditionsText,
+    });
+  },
+  deleteTerms: async (id: string): Promise<DeleteTermsResponse> => {
+    return apiClient.delete<DeleteTermsResponse>(
+      `/terms-conditions/delete-terms/${id}`,
     );
   },
 };

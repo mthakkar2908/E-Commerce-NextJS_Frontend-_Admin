@@ -22,6 +22,61 @@ export const getAllProducts = createAsyncThunk(
   },
 );
 
+export const getPrivacyText = createAsyncThunk(
+  "privacy/getPrivacyText",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await authApi.getPrivacyText();
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? `Can't get privacy data`,
+      );
+    }
+  },
+);
+
+export const getTermsText = createAsyncThunk(
+  "terms/getTermsText",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await authApi.getTermsText();
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.message ?? `Can't get terms data`);
+    }
+  },
+);
+
+export const AddOrUpdatePrivacy = createAsyncThunk(
+  "privacy/AddOrUpdatePrivacy",
+  async (PrivacyPolicyText: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.addorUpdatePrivacyPolicy(PrivacyPolicyText);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? `Can't Add or update Privacy Policy Text`,
+      );
+    }
+  },
+);
+
+export const AddOrUpdateTerms = createAsyncThunk(
+  "terms/AddOrUpdateTerms",
+  async (TermsConditionsText: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.addorUpdateTermsCondition(TermsConditionsText);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ??
+          `Can't Add or update Terms & Conditions Text`,
+      );
+    }
+  },
+);
+
 export const searchProductsByQuery = createAsyncThunk(
   "product/searchProductsByQuery",
   async (query: string, { rejectWithValue }) => {
@@ -43,6 +98,34 @@ export const deleteProduct = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.message ?? "Failed to delete Product",
+      );
+    }
+  },
+);
+
+export const deletePrivacy = createAsyncThunk(
+  "privacy/deletePrivacy",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.deletePrivacy(id);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to delete Privacy policy",
+      );
+    }
+  },
+);
+
+export const deleteTerms = createAsyncThunk(
+  "terms/deleteTerms",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.deleteTerms(id);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to delete Terms & Condition",
       );
     }
   },

@@ -15,7 +15,7 @@ import {
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setTheme } from "../redux/slices/themeSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { logoutThunk } from "../redux/slices/authSlice";
 
 interface SidebarProps {
@@ -27,11 +27,17 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
-  const [active, setActive] = useState("dashboard");
+  const [active, setActive] = useState(localStorage.getItem("activeState"));
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
   };
+
+  useEffect(() => {
+    if (active) {
+      localStorage.setItem("activeState", active);
+    }
+  }, [active]);
 
   return (
     <div
