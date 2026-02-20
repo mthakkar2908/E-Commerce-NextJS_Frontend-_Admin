@@ -7,7 +7,11 @@ import {
   GetAllProductsResponse,
   GetAllSubscriberData,
   getUsersResponse,
+  InviteUserRequest,
+  InviteUsersResponse,
   SearchProductResponse,
+  UnSubscribeChannel,
+  UnsubscribeChannelRequest,
 } from "./interfaces";
 
 export interface LoginRequest {
@@ -99,5 +103,21 @@ export const authApi = {
   },
   getSubscriberData: async (): Promise<GetAllSubscriberData[]> => {
     return apiClient.get<GetAllSubscriberData[]>(`/email-signup`);
+  },
+  unSubscribeChannel: async (
+    data: UnsubscribeChannelRequest,
+  ): Promise<UnSubscribeChannel> => {
+    return apiClient.delete<UnSubscribeChannel>(
+      "/email-signup/unSubscribe",
+      data,
+    );
+  },
+  InvitePeoples: async (
+    data: InviteUserRequest,
+  ): Promise<InviteUsersResponse> => {
+    return apiClient.post<InviteUsersResponse>(
+      "/email-signup?type=invite",
+      data,
+    );
   },
 };

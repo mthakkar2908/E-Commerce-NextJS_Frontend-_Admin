@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
+import {
+  InviteUserRequest,
+  UnsubscribeChannelRequest,
+} from "@/src/api/endpoints/interfaces";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -23,7 +27,7 @@ export const getAllPosts = createAsyncThunk(
 );
 
 export const getSubscriberData = createAsyncThunk(
-  "posts/getSubscriberData",
+  "subscribe/getSubscriberData",
   async (_, { rejectWithValue }) => {
     try {
       const res = await authApi.getSubscriberData();
@@ -31,6 +35,34 @@ export const getSubscriberData = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.message ?? "Failed to fetch Subscriber Data",
+      );
+    }
+  },
+);
+
+export const unSubscribeChannel = createAsyncThunk(
+  "subscribe/unSubscribeChannel",
+  async (payload: UnsubscribeChannelRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.unSubscribeChannel(payload);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to unsubscribe channel",
+      );
+    }
+  },
+);
+
+export const InvitePeopleForAdmin = createAsyncThunk(
+  "subscribe/InvitePeoples",
+  async (payload: InviteUserRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.InvitePeoples(payload);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.message ?? "Failed to invite Peoples",
       );
     }
   },

@@ -7,6 +7,7 @@ export interface User {
   name?: string;
   role?: string;
   token?: string;
+  adminId?: string;
 }
 
 interface AuthState {

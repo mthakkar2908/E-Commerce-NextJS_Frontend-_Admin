@@ -67,3 +67,30 @@ export interface GetAllSubscriberData {
   };
   email: string;
 }
+
+export interface UnSubscribeChannel {
+  message: string;
+  data: {
+    acknowledged: string;
+    deletedCount: number;
+  };
+}
+
+export interface UnsubscribeChannelRequest {
+  userId: string;
+  email: string;
+}
+
+export interface InviteUsersResponse {
+  message: string;
+  data?: {
+    userId: string;
+    email: string;
+    _id: string;
+  };
+}
+
+export interface InviteUserRequest {
+  userId: string;
+  email: string;
+}
