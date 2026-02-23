@@ -30,6 +30,14 @@ export interface SearchProductResponse {
 
 export interface DeleteProductResponse {
   message: string;
+  deleteProduct: {
+    _id: string;
+    name: string;
+    about_product: string;
+    price: number;
+    quan: number;
+    is_fav: boolean;
+  };
 }
 
 export interface GetAllPostResponse {
@@ -134,5 +142,47 @@ export interface DeleteTermsResponse {
   deletedTerms: {
     _id: string;
     TermsConditionsText: string;
+  };
+}
+
+export interface getOrdersResponse {
+  _id: string;
+  product_id: {
+    _id: string;
+    name: string;
+    about_product: string;
+    price: number;
+    quan: number;
+  };
+  user_id: string;
+  user_first_name: string;
+  user_last_name: string;
+  product_name: string;
+  email: string;
+  status: string;
+  address: string;
+  mobile_no: number;
+  total_Price: number;
+  product_quan: number;
+}
+
+export interface ContactFormResponse {
+  _id: string;
+  name: string;
+  email: string;
+  title: string;
+  mobile_no: string;
+  description: string;
+}
+
+export interface ContactDeletedResponse {
+  message: string;
+  deletedContact: {
+    _id: string;
+    name: string;
+    email: string;
+    title: string;
+    mobile_no: string;
+    description: string;
   };
 }

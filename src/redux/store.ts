@@ -4,6 +4,8 @@ import themeReducer from "./slices/themeSlice";
 import countReducer from "./slices/totalSlice";
 import productReducer from "./slices/productSlice";
 import postReducer from "./slices/postSlice";
+import orderReducer from "./slices/orderSlice";
+import contactReducer from "./slices/contactSlice";
 import {
   persistStore,
   persistReducer,
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   product: productReducer,
   post: postReducer,
+  orders: orderReducer,
+  contacts: contactReducer,
 });
 
 const persistConfig = {

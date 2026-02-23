@@ -1,5 +1,7 @@
 import { apiClient } from "../client";
 import {
+  ContactDeletedResponse,
+  ContactFormResponse,
   DeletePostsResponse,
   DeletePrivacyResponse,
   DeleteProductResponse,
@@ -8,6 +10,7 @@ import {
   GetAllPostResponse,
   GetAllProductsResponse,
   GetAllSubscriberData,
+  getOrdersResponse,
   getPrivacyText,
   getTermsText,
   getUsersResponse,
@@ -38,6 +41,8 @@ export interface TotalCountResponse {
   totalUsers: number;
   totalProducts: number;
   totalPosts: number;
+  totalOrders: number;
+  totalContactForms: number;
 }
 export interface RegisterRequest {
   email: string;
@@ -154,6 +159,23 @@ export const authApi = {
   deleteTerms: async (id: string): Promise<DeleteTermsResponse> => {
     return apiClient.delete<DeleteTermsResponse>(
       `/terms-conditions/delete-terms/${id}`,
+    );
+  },
+  getOrders: async (): Promise<getOrdersResponse[]> => {
+    return apiClient.get<getOrdersResponse[]>("/orders");
+  },
+  searchOrders: async (o: string): Promise<getOrdersResponse[]> => {
+    return apiClient.get<getOrdersResponse[]>(`/orders/searchOrders?o=${o}`);
+  },
+  deleteOrder: async (id: string) => {
+    return apiClient.delete(`/orders/deleteOrder/${id}`);
+  },
+  contactForm: async (): Promise<ContactFormResponse[]> => {
+    return apiClient.get<ContactFormResponse[]>("/contact/form");
+  },
+  deleteContact: async (id: string): Promise<ContactDeletedResponse> => {
+    return apiClient.delete<ContactDeletedResponse>(
+      `/contact/deleteContact/${id}`,
     );
   },
 };

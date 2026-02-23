@@ -6,6 +6,8 @@ interface TotalCountState {
   totalPosts: number;
   totalProducts: number;
   totalUsers: number;
+  totalOrders?: number;
+  totalContactForms: number;
   loading: boolean;
   error: string | null;
 }
@@ -14,6 +16,8 @@ const initialState: TotalCountState = {
   totalPosts: 0,
   totalProducts: 0,
   totalUsers: 0,
+  totalOrders: 0,
+  totalContactForms: 0,
   loading: false,
   error: null,
 };
@@ -23,6 +27,8 @@ export const fetchCounts = createAsyncThunk<
     totalPosts: number;
     totalProducts: number;
     totalUsers: number;
+    totalOrders: number;
+    totalContactForms: number;
   },
   void,
   { rejectValue: string }
@@ -34,6 +40,8 @@ export const fetchCounts = createAsyncThunk<
       totalPosts: response.totalPosts,
       totalProducts: response.totalProducts,
       totalUsers: response.totalUsers,
+      totalOrders: response.totalOrders,
+      totalContactForms: response.totalContactForms,
     };
   } catch (error: any) {
     return rejectWithValue(
@@ -85,6 +93,8 @@ const countSlice = createSlice({
         state.totalPosts = action.payload.totalPosts;
         state.totalProducts = action.payload.totalProducts;
         state.totalUsers = action.payload.totalUsers;
+        state.totalOrders = action.payload.totalOrders;
+        state.totalContactForms = action.payload.totalContactForms;
       })
       .addCase(fetchCounts.rejected, (state, action) => {
         state.loading = false;

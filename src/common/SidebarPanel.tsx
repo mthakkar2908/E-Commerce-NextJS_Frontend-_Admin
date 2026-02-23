@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import Link from "next/link";
@@ -11,11 +12,14 @@ import {
   FileText,
   ShieldCheck,
   LogOut,
+  Package,
+  ShoppingBag,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setTheme } from "../redux/slices/themeSlice";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { logoutThunk } from "../redux/slices/authSlice";
 
 interface SidebarProps {
@@ -25,9 +29,11 @@ interface SidebarProps {
 
 const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
   const dispatch = useAppDispatch();
-  const theme = useAppSelector((state) => state.theme.mode);
+  const theme = useAppSelector((state) => state?.theme.mode);
   const isDark = theme === "dark";
-  const [active, setActive] = useState(localStorage.getItem("activeState"));
+  const pathname = usePathname();
+
+  const [active, setActive] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -38,6 +44,43 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
       localStorage.setItem("activeState", active);
     }
   }, [active]);
+
+  useEffect(() => {
+    const stored =
+      typeof window !== "undefined"
+        ? localStorage.getItem("activeState")
+        : null;
+    if (stored) {
+      setActive(stored);
+      return;
+    }
+
+    if (!pathname) return;
+
+    if (pathname.includes("/orders")) setActive("orders");
+    else if (pathname.includes("/products")) setActive("products");
+    else if (pathname.includes("/subscribe")) setActive("subscribe");
+    else if (
+      pathname.includes("/privacy-policy") ||
+      pathname.includes("/privacy")
+    )
+      setActive("privacy");
+    else if (
+      pathname.includes("/terms-condition") ||
+      pathname.includes("/terms")
+    )
+      setActive("terms");
+    else setActive("dashboard");
+  }, [pathname]);
+
+  // Listen for storage events so multiple tabs stay in sync.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "activeState") setActive(e.newValue);
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   return (
     <div
@@ -100,6 +143,29 @@ ${
             {collapsed ? <UserRoundCheck size={22} /> : "Subscribe List"}
           </Link>
 
+          <Link
+            href={routes.orders}
+            onClick={() => setActive("orders")}
+            className={`px-6 py-3 rounded-lg transition ${active === "orders" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? <Package size={22} /> : "Orders"}
+          </Link>
+
+          <Link
+            href={routes.products}
+            onClick={() => setActive("products")}
+            className={`px-6 py-3 rounded-lg transition ${active === "products" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? <ShoppingBag size={22} /> : "Products"}
+          </Link>
           <Link
             href={routes.privacy}
             onClick={() => setActive("privacy")}
