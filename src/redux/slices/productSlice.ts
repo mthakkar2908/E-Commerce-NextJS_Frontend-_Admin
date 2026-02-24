@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
+import {
+  AddQuantityPayload,
+  CreateProductRequest,
+} from "@/src/api/endpoints/interfaces";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,13 +14,27 @@ const initialState = {
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async (_, { rejectWithValue }) => {
+  async (data: { page?: number; pageSize?: number }, { rejectWithValue }) => {
     try {
-      const res = await authApi.getProducts();
+      const res = await authApi.getProducts(data.page, data.pageSize);
       return res;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.message ?? "Failed to fetch products",
+      );
+    }
+  },
+);
+
+export const UpdateProductQuantity = createAsyncThunk(
+  "products/UpdateProductQuantity",
+  async (data: AddQuantityPayload, { rejectWithValue }) => {
+    try {
+      const res = await authApi.addQuantity(data);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.message ?? "Failed to update product quantity",
       );
     }
   },
@@ -98,6 +116,20 @@ export const deleteProduct = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.message ?? "Failed to delete Product",
+      );
+    }
+  },
+);
+
+export const CreateProduct = createAsyncThunk(
+  "products/CreateProduct",
+  async (data: CreateProductRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.createProduct(data);
+      return res;
+    } catch (error) {
+      return rejectWithValue(
+        (error as any)?.response?.message ?? "Failed to create product",
       );
     }
   },

@@ -18,6 +18,9 @@ export interface GetAllProductsResponse {
     price: number;
     quan: number;
   };
+  total: number;
+  page: number;
+  pageSize: number;
 }
 export interface SearchProductResponse {
   order: number;
@@ -185,4 +188,54 @@ export interface ContactDeletedResponse {
     mobile_no: string;
     description: string;
   };
+}
+
+export interface CreateProductRequest {
+  name: string;
+  about_product: string;
+  price: number;
+  quan: number;
+}
+
+export interface createProductResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    name: string;
+    about_product: string;
+    price: number;
+    qua: number;
+    _id: string;
+  };
+}
+export interface AddToCartPayload {
+  items: {
+    productId: string;
+    quantity: number;
+  }[];
+}
+
+export interface AddToCartResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    _id: string;
+    userId: string;
+    items: {
+      productId: string;
+      quantity: number;
+      _id: string;
+    }[];
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface AddQuantityPayload {
+  productId: string;
+  quantity: number;
+}
+
+export interface AddQuantityResponse {
+  message: string;
 }

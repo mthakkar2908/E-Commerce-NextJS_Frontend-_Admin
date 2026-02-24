@@ -2,7 +2,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { getUsersResponse } from "@/src/api/endpoints/interfaces";
 import Loading from "@/src/common/Loading";
-import { useAppDispatch } from "@/src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { deleteUsers, getAllUsers } from "@/src/redux/slices/totalSlice";
 import { Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
@@ -22,6 +22,9 @@ const UsersDialog: React.FC<ViewProps> = ({
   const [users, setUsers] = useState<getUsersResponse[]>();
   const [userLoading, setUserLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const theme = useAppSelector((state) => state?.theme.mode);
+  const isDark = theme === "dark";
 
   const dispatch = useAppDispatch();
 
@@ -93,8 +96,12 @@ const UsersDialog: React.FC<ViewProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-lg w-full">
-        <DialogTitle>Users List</DialogTitle>
+      <DialogContent
+        className={`max-w-lg w-full ${isDark ? "dark" : "bg-white"}`}
+      >
+        <DialogTitle className={`${isDark ? "text-white" : "text-black"}`}>
+          Users List
+        </DialogTitle>
         {userLoading && <Loading />}
 
         <div>
@@ -103,7 +110,7 @@ const UsersDialog: React.FC<ViewProps> = ({
             placeholder="Search user..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border p-2 rounded w-full mb-3"
+            className={`border p-2 rounded w-full mb-3 ${isDark ? "" : "text-gray-600"}`}
           />
         </div>
 

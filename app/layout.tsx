@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/src/redux/ReduxProvider";
+import ThemeHandler from "@/src/redux/ThemeHandler";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -29,7 +30,45 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>{children}  <Toaster position="top-right" /></ReduxProvider>
+        <ReduxProvider>
+          <ThemeHandler />
+          {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                borderRadius: "12px",
+                padding: "14px 18px",
+                fontSize: "14px",
+                fontWeight: "500",
+                // backdropFilter: "blur(10px)",
+              },
+              success: {
+                style: {
+                  background: "#ecfdf5",
+                  color: "#065f46",
+                  border: "1px solid #a7f3d0",
+                },
+                iconTheme: {
+                  primary: "#10b981",
+                  secondary: "#ffffff",
+                },
+              },
+              error: {
+                style: {
+                  background: "#fef2f2",
+                  color: "#7f1d1d",
+                  border: "1px solid #fecaca",
+                },
+                iconTheme: {
+                  primary: "#ef4444",
+                  secondary: "#ffffff",
+                },
+              },
+            }}
+          />{" "}
+        </ReduxProvider>
       </body>
     </html>
   );

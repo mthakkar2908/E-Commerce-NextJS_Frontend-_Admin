@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
+import {
+  AddToCartPayload,
+  AddToCartResponse,
+} from "@/src/api/endpoints/interfaces";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -51,6 +55,18 @@ export const deleteOrder = createAsyncThunk(
   },
 );
 
+export const addToCart = createAsyncThunk<
+  AddToCartResponse,
+  { userId: string; data: AddToCartPayload },
+  { rejectValue: string }
+>("orders/addToCart", async ({ userId, data }, { rejectWithValue }) => {
+  try {
+    const res = await authApi.addToCart(userId, data);
+    return res;
+  } catch (error: any) {
+    return rejectWithValue(error?.message ?? "Failed to add to cart");
+  }
+});
 const orderSlice = createSlice({
   name: "orders",
   initialState,

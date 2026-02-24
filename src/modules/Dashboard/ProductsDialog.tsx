@@ -53,7 +53,9 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await dispatch(getAllProducts()).unwrap();
+        const res = await dispatch(
+          getAllProducts({ page: 1, pageSize: 10 }),
+        ).unwrap();
         setProducts(Array.isArray(res.data) ? res.data : [res.data]);
       } catch (error) {
         console.error(error);

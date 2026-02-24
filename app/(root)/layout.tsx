@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import SidebarPanel from "@/src/common/SidebarPanel";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { setTheme } from "@/src/redux/slices/themeSlice";
-import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -44,7 +43,6 @@ export default function RootLayout({
         }`}
       >
         {children}
-        <Toaster position="top-right" />
       </div>
     </div>
   );

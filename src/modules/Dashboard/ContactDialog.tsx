@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ContactFormResponse } from "@/src/api/endpoints/interfaces";
-import DeleteDialog from "@/src/common/DeleteDialog";
 import { useAppDispatch } from "@/src/redux/hooks";
 import { deleteConact, getAllContacts } from "@/src/redux/slices/contactSlice";
 import { Trash2 } from "lucide-react";

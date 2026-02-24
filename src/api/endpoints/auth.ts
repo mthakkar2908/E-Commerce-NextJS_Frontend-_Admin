@@ -1,7 +1,13 @@
 import { apiClient } from "../client";
 import {
+  AddQuantityPayload,
+  AddQuantityResponse,
+  AddToCartPayload,
+  AddToCartResponse,
   ContactDeletedResponse,
   ContactFormResponse,
+  CreateProductRequest,
+  createProductResponse,
   DeletePostsResponse,
   DeletePrivacyResponse,
   DeleteProductResponse,
@@ -95,8 +101,13 @@ export const authApi = {
   deleteUser: async (id: string): Promise<DeleteUserResponse> => {
     return apiClient.delete<DeleteUserResponse>(`/users/${id}`);
   },
-  getProducts: async (): Promise<GetAllProductsResponse> => {
-    return apiClient.get<GetAllProductsResponse>("/products");
+  getProducts: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<GetAllProductsResponse> => {
+    return apiClient.get<GetAllProductsResponse>(
+      `/products?page=${page}&pageSize=${pageSize}`,
+    );
   },
   searchProducts: async (query: string): Promise<SearchProductResponse> => {
     return apiClient.get<SearchProductResponse>(
@@ -177,5 +188,25 @@ export const authApi = {
     return apiClient.delete<ContactDeletedResponse>(
       `/contact/deleteContact/${id}`,
     );
+  },
+  createProduct: async (
+    data: CreateProductRequest,
+  ): Promise<createProductResponse> => {
+    return apiClient.post<createProductResponse>(
+      `/products/createProduct`,
+      data,
+    );
+  },
+  addToCart: async (
+    userId: string,
+    data: AddToCartPayload,
+  ): Promise<AddToCartResponse> => {
+    return apiClient.post<AddToCartResponse>(`/cart/${userId}/add`, data);
+  },
+
+  addQuantity: async (
+    data: AddQuantityPayload,
+  ): Promise<AddQuantityResponse> => {
+    return apiClient.put<AddQuantityResponse>("/products/addQuan", data);
   },
 };
