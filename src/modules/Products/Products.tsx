@@ -51,7 +51,12 @@ const Products = () => {
         setProducts(Array.isArray(response) ? response : [response]);
         return;
       }
-      const res = await dispatch(getAllProducts({ page, pageSize })).unwrap();
+      const res = await dispatch(
+        getAllProducts({
+          page,
+          pageSize,
+        }),
+      ).unwrap();
       setProducts(Array.isArray(res.data) ? res.data : [res.data]);
       setTotal(res.total);
     } catch (error) {
@@ -70,7 +75,7 @@ const Products = () => {
 
   const hasOpenEnterValue = (productId: string) => {
     setActiveProductId(productId);
-    setQuantity(1); // reset quantity when opening
+    setQuantity(1);
   };
   const handleAddToCart = async (productId: string) => {
     try {
@@ -78,7 +83,12 @@ const Products = () => {
         addToCart({
           userId: userId as string,
           data: {
-            items: [{ productId: productId, quantity: quantity }],
+            items: [
+              {
+                productId: productId,
+                quantity: quantity,
+              },
+            ],
           },
         }),
       ).unwrap();
@@ -120,7 +130,9 @@ const Products = () => {
         <div className="flex gap-2 justify-end">
           <button
             type="button"
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+            }}
             onClick={() => toast.dismiss(t.id)}
             className="px-3 py-1 bg-gray-300 rounded"
           >
@@ -129,7 +141,9 @@ const Products = () => {
 
           <button
             type="button"
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+            }}
             onClick={async () => {
               try {
                 const res = await dispatch(deleteProduct(id)).unwrap();
@@ -281,7 +295,7 @@ const Products = () => {
                       <button
                         disabled={product.quan === 0}
                         onClick={() => hasOpenEnterValue(product._id)}
-                        className="disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer bg-amber-100 dark:text-gray-700 p-1.5 rounded-2xl flex items-center"
+                        className="disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer dark:bg-amber-100 bg-gray-600 dark:text-gray-700 p-1.5 rounded-2xl flex items-center"
                       >
                         {" "}
                         {activeProductId === product._id ? (

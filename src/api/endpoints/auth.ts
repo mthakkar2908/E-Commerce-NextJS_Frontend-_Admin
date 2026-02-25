@@ -23,6 +23,7 @@ import {
   InviteUserRequest,
   InviteUsersResponse,
   PrivacyPolicyResponse,
+  SearchContactResponse,
   SearchProductResponse,
   TermsConditionResponse,
   UnSubscribeChannel,
@@ -208,5 +209,9 @@ export const authApi = {
     data: AddQuantityPayload,
   ): Promise<AddQuantityResponse> => {
     return apiClient.put<AddQuantityResponse>("/products/addQuan", data);
+  },
+
+  searchContacts: async (q: string): Promise<SearchContactResponse[]> => {
+    return apiClient.get<SearchContactResponse[]>(`/contact/search?q=${q}`);
   },
 };

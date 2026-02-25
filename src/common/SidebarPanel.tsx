@@ -14,12 +14,13 @@ import {
   LogOut,
   Package,
   ShoppingBag,
+  Users,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setTheme } from "../redux/slices/themeSlice";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logoutThunk } from "../redux/slices/authSlice";
 
 interface SidebarProps {
@@ -32,7 +33,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
   const theme = useAppSelector((state) => state?.theme.mode);
   const isDark = theme === "dark";
   const pathname = usePathname();
-
+  const router = useRouter();
   const [active, setActive] = useState<string | null>(null);
 
   const handleLogout = async () => {
@@ -73,7 +74,6 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
     else setActive("dashboard");
   }, [pathname]);
 
-  // Listen for storage events so multiple tabs stay in sync.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === "activeState") setActive(e.newValue);
@@ -92,7 +92,17 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
       } ${collapsed ? "items-center" : "items-start px-4"}`}
     >
       <div className="flex flex-col w-full">
-        {!collapsed && <h1 className="text-xl font-bold mb-4">Admin Panel</h1>}
+        {!collapsed && (
+          <h1
+            onClick={() => {
+              router.push(routes.dashboard);
+              localStorage.setItem("activeState", "dashboard");
+            }}
+            className="text-xl font-bold mb-4 cursor-pointer"
+          >
+            Admin Panel
+          </h1>
+        )}
 
         <div
           className={`flex ${
@@ -114,6 +124,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
         <nav className="flex flex-col gap-4 w-full">
           <Link
             href={routes.dashboard}
+            title={collapsed ? "Dashboard" : ""}
             onClick={() => setActive("dashboard")}
             className={`px-6 py-3 rounded-lg transition ${
               active === "dashboard"
@@ -133,6 +144,7 @@ ${
 
           <Link
             href={routes.subscribe}
+            title={collapsed ? "Subscribe List" : ""}
             onClick={() => setActive("subscribe")}
             className={`px-6 py-3 rounded-lg transition ${active === "subscribe" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""}  ${
               isDark
@@ -145,6 +157,7 @@ ${
 
           <Link
             href={routes.orders}
+            title={collapsed ? "Orders" : ""}
             onClick={() => setActive("orders")}
             className={`px-6 py-3 rounded-lg transition ${active === "orders" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
@@ -157,6 +170,7 @@ ${
 
           <Link
             href={routes.products}
+            title={collapsed ? "Products" : ""}
             onClick={() => setActive("products")}
             className={`px-6 py-3 rounded-lg transition ${active === "products" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
@@ -166,8 +180,23 @@ ${
           >
             {collapsed ? <ShoppingBag size={22} /> : "Products"}
           </Link>
+
+          <Link
+            href={routes.contacts}
+            title={collapsed ? "Contacts" : ""}
+            onClick={() => setActive("contacts")}
+            className={`px-6 py-3 rounded-lg transition ${active === "contacts" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? <Users size={22} /> : "Contacts"}
+          </Link>
+
           <Link
             href={routes.privacy}
+            title={collapsed ? "Privacy Policy" : ""}
             onClick={() => setActive("privacy")}
             className={`px-6 py-3 rounded-lg transition ${active === "privacy" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
@@ -180,6 +209,7 @@ ${
 
           <Link
             href={routes.terms}
+            title={collapsed ? "Terms & Conditions" : ""}
             onClick={() => setActive("terms")}
             className={`px-6 py-3 rounded-lg transition ${active === "terms" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark

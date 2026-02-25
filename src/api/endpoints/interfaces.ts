@@ -165,7 +165,7 @@ export interface getOrdersResponse {
   status: string;
   address: string;
   mobile_no: number;
-  total_Price: number;
+  total_price: number;
   product_quan: number;
 }
 
@@ -238,4 +238,13 @@ export interface AddQuantityPayload {
 
 export interface AddQuantityResponse {
   message: string;
+}
+
+export interface SearchContactResponse {
+  _id: string;
+  name: string;
+  email: string;
+  title: string;
+  mobile_no: string;
+  description: string;
 }

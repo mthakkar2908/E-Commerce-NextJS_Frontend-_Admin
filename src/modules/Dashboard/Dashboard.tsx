@@ -1,15 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { fetchCounts } from "@/src/redux/slices/totalSlice";
 import { useEffect, useState } from "react";
@@ -19,6 +11,7 @@ import PostsDialog from "./PostsDialog";
 import { useRouter } from "next/navigation";
 import ContactDialog from "./ContactDialog";
 import toast from "react-hot-toast";
+import routes from "@/src/common/routes";
 
 const cards = [
   {
@@ -49,7 +42,7 @@ const cards = [
     title: "Contact forms",
     description: "Total Contact Forms",
     footer: "Updated 10 hour ago",
-    more: false,
+    more: true,
   },
 ];
 
@@ -74,11 +67,7 @@ const Dashboard = () => {
   } = useAppSelector((state) => state.count);
 
   const getData = async () => {
-    try {
-      await dispatch(fetchCounts()).unwrap();
-    } catch (error) {
-      console.error(error);
-    }
+    await dispatch(fetchCounts()).unwrap();
   };
 
   useEffect(() => {
@@ -104,80 +93,108 @@ const Dashboard = () => {
     }
   };
 
-  const handleShowMore = async () => {
+  const handleShowMore = async (title: string) => {
     try {
       setShowMoreLoading(true);
-      await router.push("/products");
-      localStorage.setItem("activeState", "products");
+      if (title === "Products") {
+        await router.push(routes.products);
+        localStorage.setItem("activeState", "products");
+      } else {
+        await router.push(routes.contacts);
+        localStorage.setItem("activeState", "contacts");
+      }
     } catch (error) {
       toast.error((error as string) ?? "Failed to navigate");
     }
   };
 
   return (
-    <div className="p-8">
-      <div className="max-w-6xl">
-        <h1
-          className={`text-3xl font-bold mb-4 ${
-            isDark ? "text-blue-400" : "text-gray-800"
-          }`}
-        >
-          Dashboard
-        </h1>
-        <div
-          className={`rounded-lg shadow p-6 flex ${
-            isDark ? "bg-gray-700 text-gray-100" : "bg-white text-gray-600"
-          }`}
-        >
-          <div className="flex gap-3 flex-wrap">
-            {cards.map((card, index) => (
-              <Card key={index} className="w-95">
-                <CardHeader>
-                  <CardTitle>{card.title}</CardTitle>
-                  <CardDescription>{card.description}</CardDescription>
-                  <CardAction
-                    onClick={() => handleView(card.title)}
-                    className="cursor-pointer bg-gray-400 px-2 py-2 rounded-2xl hover:bg-gray-500"
+    <div className="min-h-screen px-8 py-10">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12">
+          <h1
+            className={`text-4xl font-bold tracking-tight ${
+              isDark
+                ? "bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent"
+                : "text-gray-900"
+            }`}
+          >
+            Dashboard Overview
+          </h1>
+
+          <p
+            className={`mt-2 text-sm ${
+              isDark ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
+            Monitor system statistics and manage data efficiently
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cards.map((card, index) => (
+            <Card
+              key={index}
+              className={`relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl group ${
+                isDark
+                  ? "bg-gray-800/70 border border-gray-700 backdrop-blur-lg"
+                  : "bg-white border border-gray-200 shadow-sm"
+              }`}
+            >
+              {/* Glow Effect */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-linear-to-br from-cyan-500/10 to-indigo-500/10 pointer-events-none" />
+
+              {/* Title */}
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-lg font-semibold">{card.title}</h3>
+                  <p className="text-sm opacity-70 mt-1">{card.description}</p>
+                </div>
+                <button
+                  onClick={() => handleView(card.title)}
+                  className="px-4 py-2 cursor-pointer rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
+                >
+                  {card.title === "Orders" ? "Go to Orders" : "View"}
+                </button>
+              </div>
+
+              {/* Count */}
+              <div className="mt-6">
+                <p className="text-4xl font-bold tracking-tight">
+                  {card.title === "Users"
+                    ? totalUsers
+                    : card.title === "Products"
+                      ? totalProducts
+                      : card.title === "Posts"
+                        ? totalPosts
+                        : card.title === "Orders"
+                          ? totalOrders
+                          : totalContactForms}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-8 flex justify-between items-center">
+                {card.more && (
+                  <button
+                    onClick={() => handleShowMore(card.title)}
+                    className="text-sm cursor-pointer font-medium text-cyan-500 hover:text-blue-500 transition"
                   >
-                    {card.title === "Orders" ? "Go to Orders" : "View"}
-                  </CardAction>
-                </CardHeader>
+                    {showMoreLoading ? "Navigating..." : "Show more →"}
+                  </button>
+                )}
+              </div>
 
-                <CardContent>
-                  <p>
-                    {card.title === "Users"
-                      ? totalUsers
-                      : card.title === "Products"
-                        ? totalProducts
-                        : card.title === "Posts"
-                          ? totalPosts
-                          : card.title === "Orders"
-                            ? totalOrders
-                            : totalContactForms}
-                  </p>
-                </CardContent>
-
-                <CardFooter>
-                  {card.more ? (
-                    <div className="flex justify-between gap-12 -mr-3.75">
-                      <p>{card.footer}</p>
-                      <p
-                        onClick={handleShowMore}
-                        className="ml-10 cursor-pointer text-blue-400 underline hover:text-red-500"
-                      >
-                        {showMoreLoading ? "Navigating..." : "Show more..."}
-                      </p>
-                    </div>
-                  ) : (
-                    <p>{card.footer}</p>
-                  )}
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+              {/* Footer */}
+              <div className="mt-6 text-xs opacity-60">{card.footer}</div>
+            </Card>
+          ))}
         </div>
       </div>
 
+      {/* Dialogs */}
       {openViewForUsers && (
         <UsersDialog
           open={openViewForUsers}

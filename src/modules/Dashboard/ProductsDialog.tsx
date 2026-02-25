@@ -115,14 +115,6 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
                         <div className="flex-1 text-center">
                           {product?.quan}
                         </div>
-                        <div className="ml-2 flex">
-                          <button
-                            onClick={() => handleDeleteProduct(product?._id)}
-                            className="bg-gray-500 gap-2 flex rounded-3xl px-2 py-1 text-xs cursor-pointer"
-                          >
-                            <Trash2 size={15} /> Delete
-                          </button>
-                        </div>
                       </div>
                     </td>
                   </tr>

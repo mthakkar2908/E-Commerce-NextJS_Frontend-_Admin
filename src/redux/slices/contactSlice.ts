@@ -37,11 +37,22 @@ export const deleteConact = createAsyncThunk(
   },
 );
 
+export const searchContacts = createAsyncThunk(
+  "contacts/searchContact",
+  async (q: string, { rejectWithValue }) => {
+    try {
+      const response = await authApi.searchContacts(q);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Faild to search contact");
+    }
+  },
+);
+
 const contactSlice = createSlice({
   name: "contacts",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
 });
 
 export default contactSlice.reducer;
