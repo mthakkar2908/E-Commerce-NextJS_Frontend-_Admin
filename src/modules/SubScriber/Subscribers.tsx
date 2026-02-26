@@ -22,11 +22,13 @@ import toast from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
 import DeleteDialog from "@/src/common/DeleteDialog";
 import InviteDialog from "./InviteDialog";
+import { useMediaQuery } from "react-responsive";
 
 export function Subscribers() {
   const theme = useAppSelector((state) => state.theme.mode);
   const user = useAppSelector((state) => state.auth.user);
   const userId = user?.adminId;
+  const isMobile = useMediaQuery({ maxWidth: 1100 });
 
   const isDark = theme === "dark";
   const dispatch = useAppDispatch();
@@ -87,7 +89,7 @@ export function Subscribers() {
         >
           Subscribe List
         </h1>
-        <div className="flex justify-between gap-2 items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <input
             type="text"
             placeholder="Search Subscriber..."
@@ -100,7 +102,13 @@ export function Subscribers() {
             onClick={() => setInviteUsers(true)}
             className="flex justify-center w-40 items-center bg-blue-400 hover:bg-indigo-700 text-white cursor-pointer p-2 mb-3 gap-2 rounded-xl"
           >
-            <Plus size={20} /> Invite User
+            {isMobile ? (
+              <Plus size={20} />
+            ) : (
+              <>
+                <Plus size={20} /> Invite User
+              </>
+            )}
           </button>
         </div>
 

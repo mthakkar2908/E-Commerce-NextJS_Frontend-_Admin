@@ -1,4 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -22,6 +23,8 @@ import { setTheme } from "../redux/slices/themeSlice";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { logoutThunk } from "../redux/slices/authSlice";
+import toast from "react-hot-toast";
+import { useMediaQuery } from "react-responsive";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -35,10 +38,22 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const [active, setActive] = useState<string | null>(null);
-
+  const user = useAppSelector((state) => state.auth.user);
+  const userEmail = user?.email;
   const handleLogout = async () => {
-    await dispatch(logoutThunk());
+    try {
+      await dispatch(logoutThunk(String(userEmail)));
+      router.push(routes.login);
+    } catch (error) {
+      toast.error((error as any) ?? "Failed to Logged out.");
+    }
   };
+
+  const isMobile = useMediaQuery({ maxWidth: 600 });
+
+  useEffect(() => {
+    setCollapsed(isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     if (active) {
@@ -71,6 +86,11 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
       pathname.includes("/terms")
     )
       setActive("terms");
+    else if (
+      pathname.includes("/contact-forms") ||
+      pathname.includes("contact")
+    )
+      setActive("contacts");
     else setActive("dashboard");
   }, [pathname]);
 
@@ -84,10 +104,9 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
 
   return (
     <div
-      className={`w-full h-screen transition-all duration-300 ease-in-out ${
+      className={`shrink-0 h-screen max-h-screen overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out ${
         isDark ? "bg-gray-800" : "bg-gray-400"
-      } ${isDark ? "text-white" : "text-black"} 
-      flex flex-col pt-8 border-r ${
+      } ${isDark ? "text-white" : "text-black"} flex flex-col pt-6 border-r ${
         isDark ? "border-gray-700" : "border-gray-200"
       } ${collapsed ? "items-center" : "items-start px-4"}`}
     >
@@ -121,109 +140,132 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
           </button>
         </div>
 
-        <nav className="flex flex-col gap-4 w-full">
+        <nav className="flex flex-col gap-3 w-full">
           <Link
             href={routes.dashboard}
             title={collapsed ? "Dashboard" : ""}
             onClick={() => setActive("dashboard")}
-            className={`px-6 py-3 rounded-lg transition ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${
               active === "dashboard"
                 ? isDark
                   ? "bg-gray-700 text-blue-400"
                   : "bg-blue-100 text-blue-600"
                 : ""
-            }
-${
-  isDark
-    ? "hover:bg-gray-700 hover:text-blue-400"
-    : "hover:bg-blue-100 hover:text-blue-600"
-}`}
+            } ${isDark ? "hover:bg-gray-700 hover:text-blue-400" : "hover:bg-blue-100 hover:text-blue-600"}`}
           >
-            {collapsed ? <LayoutDashboard size={22} /> : "Dashboard"}
+            {collapsed ? (
+              <LayoutDashboard size={22} />
+            ) : (
+              <span className="truncate">Dashboard</span>
+            )}
           </Link>
 
           <Link
             href={routes.subscribe}
             title={collapsed ? "Subscribe List" : ""}
             onClick={() => setActive("subscribe")}
-            className={`px-6 py-3 rounded-lg transition ${active === "subscribe" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""}  ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "subscribe" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""}  ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <UserRoundCheck size={22} /> : "Subscribe List"}
+            {collapsed ? (
+              <UserRoundCheck size={22} />
+            ) : (
+              <span className="truncate">Subscribe List</span>
+            )}
           </Link>
 
           <Link
             href={routes.orders}
             title={collapsed ? "Orders" : ""}
             onClick={() => setActive("orders")}
-            className={`px-6 py-3 rounded-lg transition ${active === "orders" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "orders" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <Package size={22} /> : "Orders"}
+            {collapsed ? (
+              <Package size={22} />
+            ) : (
+              <span className="truncate">Orders</span>
+            )}
           </Link>
 
           <Link
             href={routes.products}
             title={collapsed ? "Products" : ""}
             onClick={() => setActive("products")}
-            className={`px-6 py-3 rounded-lg transition ${active === "products" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "products" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <ShoppingBag size={22} /> : "Products"}
+            {collapsed ? (
+              <ShoppingBag size={22} />
+            ) : (
+              <span className="truncate">Products</span>
+            )}
           </Link>
 
           <Link
             href={routes.contacts}
             title={collapsed ? "Contacts" : ""}
             onClick={() => setActive("contacts")}
-            className={`px-6 py-3 rounded-lg transition ${active === "contacts" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "contacts" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <Users size={22} /> : "Contacts"}
+            {collapsed ? (
+              <Users size={22} />
+            ) : (
+              <span className="truncate">Contacts</span>
+            )}
           </Link>
 
           <Link
             href={routes.privacy}
             title={collapsed ? "Privacy Policy" : ""}
             onClick={() => setActive("privacy")}
-            className={`px-6 py-3 rounded-lg transition ${active === "privacy" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "privacy" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <ShieldCheck size={22} /> : "Privacy Policy"}
+            {collapsed ? (
+              <ShieldCheck size={22} />
+            ) : (
+              <span className="truncate">Privacy Policy</span>
+            )}
           </Link>
 
           <Link
             href={routes.terms}
             title={collapsed ? "Terms & Conditions" : ""}
             onClick={() => setActive("terms")}
-            className={`px-6 py-3 rounded-lg transition ${active === "terms" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "terms" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
               isDark
                 ? "hover:bg-gray-700 hover:text-blue-400"
                 : "hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            {collapsed ? <FileText size={22} /> : "Terms & Conditions"}
+            {collapsed ? (
+              <FileText size={22} />
+            ) : (
+              <span className="truncate">Terms & Conditions</span>
+            )}
           </Link>
         </nav>
       </div>
 
       <div
-        className={`mt-auto w-full pb-6 flex justify-center gap-2 ${collapsed && "flex flex-col"} `}
+        className={`mt-auto w-full pb-6 flex justify-center gap-2 ${collapsed ? "flex flex-col items-center" : "flex-row items-center px-4"}`}
       >
         <button
           onClick={() => {
@@ -231,7 +273,7 @@ ${
             dispatch(setTheme(newTheme));
             localStorage.setItem("theme", newTheme);
           }}
-          className={`flex items-center gap-2 px-8 py-2 rounded-lg transition cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition cursor-pointer ${
             isDark
               ? "bg-gray-700 hover:bg-gray-600"
               : "bg-white hover:bg-gray-100"

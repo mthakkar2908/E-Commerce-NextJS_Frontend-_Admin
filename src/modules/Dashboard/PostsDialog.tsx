@@ -49,7 +49,7 @@ const PostsDialog: React.FC<ViewPostsProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-200 w-full">
+      <DialogContent className="max-w-210 w-full max-h-150 h-full overflow-y-auto">
         <DialogTitle>Posts List</DialogTitle>
 
         <div className="overflow-x-auto mt-4">

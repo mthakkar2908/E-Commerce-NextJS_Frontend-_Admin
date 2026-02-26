@@ -61,9 +61,7 @@ export const InvitePeopleForAdmin = createAsyncThunk(
       const response = await authApi.InvitePeoples(payload);
       return response;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.message ?? "Failed to invite Peoples",
-      );
+      return rejectWithValue(error?.message ?? "Failed to invite Peoples");
     }
   },
 );
@@ -86,7 +84,6 @@ const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
 });
 
 export default postSlice.reducer;

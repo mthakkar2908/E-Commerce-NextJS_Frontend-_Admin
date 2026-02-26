@@ -1,5 +1,4 @@
 import { getStore } from "../redux/storeAccessor";
-import { UnsubscribeChannelRequest } from "./endpoints/interfaces";
 
 interface ApiConfig {
   baseURL: string;

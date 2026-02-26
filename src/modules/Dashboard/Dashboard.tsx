@@ -17,31 +17,26 @@ const cards = [
   {
     title: "Users",
     description: "Total registered users",
-    footer: "Updated today",
     more: false,
   },
   {
     title: "Products",
     description: "Total Products",
-    footer: "Updated 1 hour ago",
     more: true,
   },
   {
     title: "Posts",
     description: "Total Posts",
-    footer: "Updated 4 hour ago",
     more: false,
   },
   {
     title: "Orders",
     description: "Total Orders",
-    footer: "Updated 2 hour ago",
     more: false,
   },
   {
     title: "Contact forms",
     description: "Total Contact Forms",
-    footer: "Updated 10 hour ago",
     more: true,
   },
 ];
@@ -53,10 +48,9 @@ const Dashboard = () => {
   const [openViewForProducts, setOpenViewForProducts] = useState(false);
   const [openViewForPosts, setOpenViewForPosts] = useState(false);
   const [openViewForContactForms, setOpenViewForContactForms] = useState(false);
-  const [showMoreLoading, setShowMoreLoading] = useState(false);
+  const [loadingFor, setLoadingFor] = useState<string | null>(null);
 
   const router = useRouter();
-
   const dispatch = useAppDispatch();
   const {
     totalPosts,
@@ -64,6 +58,11 @@ const Dashboard = () => {
     totalUsers,
     totalOrders,
     totalContactForms,
+    lastContactAdded,
+    lastOrderAdded,
+    lastPostAdded,
+    lastProductAdded,
+    lastUserAdded,
   } = useAppSelector((state) => state.count);
 
   const getData = async () => {
@@ -95,16 +94,19 @@ const Dashboard = () => {
 
   const handleShowMore = async (title: string) => {
     try {
-      setShowMoreLoading(true);
+      setLoadingFor(title);
+
       if (title === "Products") {
-        await router.push(routes.products);
         localStorage.setItem("activeState", "products");
+        await router.push(routes.products);
       } else {
-        await router.push(routes.contacts);
         localStorage.setItem("activeState", "contacts");
+        await router.push(routes.contacts);
       }
     } catch (error) {
-      toast.error((error as string) ?? "Failed to navigate");
+      toast.error("Failed to navigate");
+    } finally {
+      setLoadingFor(null);
     }
   };
 
@@ -133,7 +135,7 @@ const Dashboard = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
           {cards.map((card, index) => (
             <Card
               key={index}
@@ -182,13 +184,26 @@ const Dashboard = () => {
                     onClick={() => handleShowMore(card.title)}
                     className="text-sm cursor-pointer font-medium text-cyan-500 hover:text-blue-500 transition"
                   >
-                    {showMoreLoading ? "Navigating..." : "Show more →"}
+                    {loadingFor === card.title
+                      ? "Navigating..."
+                      : "Show more →"}{" "}
                   </button>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="mt-6 text-xs opacity-60">{card.footer}</div>
+              <div className="mt-6 flex gap-1 text-xs opacity-60">
+                <p>Count Updated</p>
+                {card.title === "Users"
+                  ? lastUserAdded
+                  : card.title === "Products"
+                    ? lastProductAdded
+                    : card.title === "Posts"
+                      ? lastPostAdded
+                      : card.title === "Orders"
+                        ? lastOrderAdded
+                        : lastContactAdded}
+              </div>
             </Card>
           ))}
         </div>

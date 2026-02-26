@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import useDebounce from "@/src/hooks/useDebounce";
 import { useAppDispatch } from "@/src/redux/hooks";
@@ -64,17 +63,6 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
 
     fetchProducts();
   }, [dispatch]);
-
-  const handleDeleteProduct = async (id: string) => {
-    try {
-      const res = await dispatch(deleteProduct(id)).unwrap();
-      toast.success(res.message ?? "product deleted successfully.");
-      onDeleteSuccess();
-      setOpen(false);
-    } catch (error) {
-      toast.error((error as any) ?? "faild to delete Product");
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

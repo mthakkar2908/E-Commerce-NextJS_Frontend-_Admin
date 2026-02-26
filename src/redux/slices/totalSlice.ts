@@ -10,6 +10,11 @@ interface TotalCountState {
   totalContactForms: number;
   loading: boolean;
   error: string | null;
+  lastUserAdded: string;
+  lastOrderAdded: string;
+  lastPostAdded: string;
+  lastContactAdded: string;
+  lastProductAdded: string;
 }
 
 const initialState: TotalCountState = {
@@ -18,6 +23,11 @@ const initialState: TotalCountState = {
   totalUsers: 0,
   totalOrders: 0,
   totalContactForms: 0,
+  lastContactAdded: "",
+  lastOrderAdded: "",
+  lastPostAdded: "",
+  lastProductAdded: "",
+  lastUserAdded: "",
   loading: false,
   error: null,
 };
@@ -29,6 +39,11 @@ export const fetchCounts = createAsyncThunk<
     totalUsers: number;
     totalOrders: number;
     totalContactForms: number;
+    lastUserAdded: string;
+    lastOrderAdded: string;
+    lastPostAdded: string;
+    lastContactAdded: string;
+    lastProductAdded: string;
   },
   void,
   { rejectValue: string }
@@ -42,6 +57,11 @@ export const fetchCounts = createAsyncThunk<
       totalUsers: response.totalUsers,
       totalOrders: response.totalOrders,
       totalContactForms: response.totalContactForms,
+      lastUserAdded: response.lastUserAdded,
+      lastOrderAdded: response.lastOrderAdded,
+      lastPostAdded: response.lastPostAdded,
+      lastContactAdded: response.lastContactAdded,
+      lastProductAdded: response.lastProductAdded,
     };
   } catch (error: any) {
     return rejectWithValue(
@@ -95,6 +115,11 @@ const countSlice = createSlice({
         state.totalUsers = action.payload.totalUsers;
         state.totalOrders = action.payload.totalOrders;
         state.totalContactForms = action.payload.totalContactForms;
+        state.lastUserAdded = action.payload.lastUserAdded;
+        state.lastContactAdded = action.payload.lastContactAdded;
+        state.lastOrderAdded = action.payload.lastOrderAdded;
+        state.lastPostAdded = action.payload.lastPostAdded;
+        state.lastProductAdded = action.payload.lastProductAdded;
       })
       .addCase(fetchCounts.rejected, (state, action) => {
         state.loading = false;

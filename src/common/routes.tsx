@@ -1,4 +1,5 @@
 const routes = {
+  login: "/",
   dashboard: "/dashboard",
   subscribe: "/subscribes",
   privacy: "/privacy-policy",

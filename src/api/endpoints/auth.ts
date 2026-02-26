@@ -6,6 +6,8 @@ import {
   AddToCartResponse,
   ContactDeletedResponse,
   ContactFormResponse,
+  CreateOrderRequest,
+  CreateOrderResponse,
   CreateProductRequest,
   createProductResponse,
   DeletePostsResponse,
@@ -22,55 +24,19 @@ import {
   getUsersResponse,
   InviteUserRequest,
   InviteUsersResponse,
+  LoginRequest,
+  LoginResponse,
+  LogoutResponse,
   PrivacyPolicyResponse,
+  RegisterRequest,
+  RegisterResponse,
   SearchContactResponse,
   SearchProductResponse,
   TermsConditionResponse,
+  TotalCountResponse,
   UnSubscribeChannel,
   UnsubscribeChannelRequest,
 } from "./interfaces";
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  message: string;
-  admin: {
-    adminId: string;
-    email: string;
-    token?: string;
-  };
-}
-
-export interface TotalCountResponse {
-  totalUsers: number;
-  totalProducts: number;
-  totalPosts: number;
-  totalOrders: number;
-  totalContactForms: number;
-}
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name?: string;
-}
-
-export interface RegisterResponse {
-  success: boolean;
-  message: string;
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-  };
-}
-
-export interface LogoutResponse {
-  success: boolean;
-  message: string;
-}
 
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -84,8 +50,8 @@ export const authApi = {
     return apiClient.post<RegisterResponse>("/auth/register", data);
   },
 
-  logout: async (): Promise<LogoutResponse> => {
-    return apiClient.post<LogoutResponse>("/auth/logout");
+  logout: async (email: string): Promise<LogoutResponse> => {
+    return apiClient.post<LogoutResponse>("/admin/logout", { email });
   },
 
   verifyToken: async (token: string): Promise<{ valid: boolean }> => {
@@ -213,5 +179,10 @@ export const authApi = {
 
   searchContacts: async (q: string): Promise<SearchContactResponse[]> => {
     return apiClient.get<SearchContactResponse[]>(`/contact/search?q=${q}`);
+  },
+  createOrder: async (
+    data: CreateOrderRequest,
+  ): Promise<CreateOrderResponse> => {
+    return apiClient.post<CreateOrderResponse>("/orders/createOrder", data);
   },
 };

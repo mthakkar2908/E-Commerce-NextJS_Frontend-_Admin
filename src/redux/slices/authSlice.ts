@@ -45,19 +45,19 @@ export const loginThunk = createAsyncThunk<
   }
 });
 
-export const logoutThunk = createAsyncThunk<
-  void,
-  void,
-  { rejectValue: string }
->("auth/logout", async (_, {}) => {
-  try {
-    await authApi.logout();
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Logout error:", error);
+export const logoutThunk = createAsyncThunk(
+  "auth/logout",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      await authApi.logout(email);
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("An error occurred during logout");
     }
-  }
-});
+  },
+);
 
 const authSlice = createSlice({
   name: "auth",

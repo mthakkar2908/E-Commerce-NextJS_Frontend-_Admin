@@ -2,7 +2,6 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getOrdersResponse } from "@/src/api/endpoints/interfaces";
-import DeleteDialog from "@/src/common/DeleteDialog";
 import useDebounce from "@/src/hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import {
@@ -19,6 +18,7 @@ const Orders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme.mode);
+  const [orderLoading, setOrderLoading] = useState(false);
 
   const debounce = useDebounce(searchTerm, 500);
 
@@ -26,10 +26,13 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        setOrderLoading(true);
         const response = await dispatch(getAllOrders()).unwrap();
         setOrders(response);
       } catch (error) {
         toast.error((error as any) ?? "Failed to fetch Orders");
+      } finally {
+        setOrderLoading(false);
       }
     };
 
@@ -50,18 +53,6 @@ const Orders = () => {
 
     fetchOrders();
   }, [dispatch, debounce]);
-
-  const handleDeleteOrder = async (orderId: string) => {
-    try {
-      await dispatch(deleteOrder(orderId)).unwrap();
-      setOrders((prevOrders) =>
-        prevOrders.filter((order) => order._id !== orderId),
-      );
-      toast.success("Order deleted successfully");
-    } catch (error) {
-      toast.error((error as any) ?? "Failed to delete an order");
-    }
-  };
 
   const handleDeleteClick = (id: string) => {
     toast((t) => (
@@ -118,7 +109,7 @@ const Orders = () => {
         >
           Orders List
         </h1>{" "}
-        <div className="relative w-100 ml-2 mb-3">
+        <div className="relative md:w-100 w-50  ml-2 mb-3">
           <input
             type="text"
             value={searchTerm}
@@ -211,6 +202,10 @@ const Orders = () => {
                 ))}
               </tbody>
             </table>
+          ) : orderLoading ? (
+            <p className="flex justify-center items-center mt-3 mb-3">
+              Loading...
+            </p>
           ) : (
             <p className="text-center py-4">No Orders Found.</p>
           )}

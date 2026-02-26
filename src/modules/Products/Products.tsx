@@ -15,6 +15,16 @@ import toast from "react-hot-toast";
 import ProductDialog from "./ProductDialog";
 import { addToCart } from "@/src/redux/slices/orderSlice";
 import useDebounce from "@/src/hooks/useDebounce";
+import OrderDialog from "./OrderDialog";
+
+export type Product = {
+  order: number;
+  _id: string;
+  name: string;
+  about_product: string;
+  price: number;
+  quan: number;
+};
 const Products = () => {
   const dispatch = useAppDispatch();
   const [isProductOpen, setIsProductOpen] = useState(false);
@@ -39,6 +49,9 @@ const Products = () => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [newQuantity, setNewQuantity] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [openOrder, setOpenOrder] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const debounce = useDebounce(searchTerm, 500);
 
@@ -51,6 +64,7 @@ const Products = () => {
         setProducts(Array.isArray(response) ? response : [response]);
         return;
       }
+      setLoading(true);
       const res = await dispatch(
         getAllProducts({
           page,
@@ -61,6 +75,8 @@ const Products = () => {
       setTotal(res.total);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,6 +186,11 @@ const Products = () => {
     ));
   };
 
+  const handleCreateOrderClick = (product: Product) => {
+    setOpenOrder(true);
+    setSelectedProduct(product);
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br p-8 text-slate-200">
       <div className="flex justify-between">
@@ -197,9 +218,11 @@ const Products = () => {
           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer dark:hover:text-white hover:text-black "
         />
       </div>
-      <div className="rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
+      <div className="overflow-x-auto rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
         {products?.length === 0 ? (
           <p className="p-6 text-center text-slate-400">No products found.</p>
+        ) : loading ? (
+          <p className="flex justify-center items-center mt-2">Loading...</p>
         ) : (
           <table className="w-full text-sm">
             <thead>
@@ -209,6 +232,7 @@ const Products = () => {
                 <th className="px-6 py-4 text-left">Price</th>
                 <th className="px-6 py-4 text-left">Quantity</th>
                 <th className="px-6 py-4 text-center">Action</th>
+                <th className="px-6 py-4 text-center">Cart</th>
                 <th className="px-6 py-4 text-center">Orders</th>
               </tr>
             </thead>
@@ -343,35 +367,55 @@ const Products = () => {
                       )}
                     </div>
                   </td>
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => handleCreateOrderClick(product)}
+                      className="bg-transparent p-2 border border-violet-300 rounded-3xl dark:text-violet-400 text-slate-600 cursor-pointer hover:text-white hover:bg-violet-600 dark:hover:bg-white dark:hover:text-black"
+                    >
+                      Create Order
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
 
-        <div className="flex items-center justify-between mt-6 px-4 py-1">
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            Showing{" "}
-            <span className="font-semibold">{(page - 1) * pageSize + 1}</span>{" "}
-            to{" "}
-            <span className="font-semibold">
-              {Math.min(page * pageSize, total)}
-            </span>{" "}
-            of <span className="font-semibold">{total}</span> results
-          </div>
+        <div
+          className="flex flex-col md:flex-row 
+                 md:items-center md:justify-between 
+                 gap-4 mt-6 px-4 py-3 
+                 border-t dark:border-gray-800"
+        >
+          {/* Showing Info Section */}
+          <div
+            className="text-sm text-gray-600 dark:text-gray-300 
+                   flex flex-col sm:flex-row 
+                   sm:items-center gap-2"
+          >
+            <span>
+              Showing{" "}
+              <span className="font-semibold">{(page - 1) * pageSize + 1}</span>{" "}
+              to{" "}
+              <span className="font-semibold">
+                {Math.min(page * pageSize, total)}
+              </span>{" "}
+              of <span className="font-semibold">{total}</span> results
+            </span>
 
-          <div className="flex items-center gap-4">
             <select
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
                 setPage(1);
               }}
-              className="px-3 py-2 rounded-lg border 
-                 border-gray-300 dark:border-gray-700
-                 bg-white dark:bg-gray-900
-                 text-gray-800 dark:text-gray-100
-                 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-1.5 rounded-lg border
+                     border-gray-300 dark:border-gray-700
+                     bg-white dark:bg-gray-900
+                     text-gray-800 dark:text-gray-100
+                     focus:outline-none focus:ring-2 
+                     focus:ring-blue-500
+                     w-20 sm:w-auto transition-all"
             >
               {[5, 10, 15, 20].map((size) => (
                 <option key={size} value={size}>
@@ -379,15 +423,21 @@ const Products = () => {
                 </option>
               ))}
             </select>
+          </div>
 
+          {/* Pagination Controls */}
+          <div className="flex items-center justify-center md:justify-end gap-3">
             <button
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
-              className="px-3 py-1 rounded-lg border
-                 border-black dark:border-gray-700
-                 disabled:opacity-50 text-black dark:text-white
-                 cursor-pointer disabled:cursor-not-allowed
-                 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-4 py-1.5 rounded-lg border
+                     border-gray-300 dark:border-gray-700
+                     text-black dark:text-white
+                     disabled:opacity-50 
+                     disabled:cursor-not-allowed
+                     hover:bg-gray-100 
+                     dark:hover:bg-gray-800
+                     transition-all duration-200"
             >
               Prev
             </button>
@@ -399,10 +449,14 @@ const Products = () => {
             <button
               disabled={page === totalPages}
               onClick={() => setPage((prev) => prev + 1)}
-              className="px-3 py-1 rounded-lg border
-                 border-black dark:border-gray-700 text-black dark:text-white
-                 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed
-                 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="px-4 py-1.5 rounded-lg border
+                     border-gray-300 dark:border-gray-700
+                     text-black dark:text-white
+                     disabled:opacity-50 
+                     disabled:cursor-not-allowed
+                     hover:bg-gray-100 
+                     dark:hover:bg-gray-800
+                     transition-all duration-200"
             >
               Next
             </button>
@@ -415,6 +469,15 @@ const Products = () => {
           open={isProductOpen}
           setOpen={setIsProductOpen}
           fetchProducts={fetchProducts}
+        />
+      )}
+
+      {openOrder && (
+        <OrderDialog
+          open={openOrder}
+          setOpen={setOpenOrder}
+          selectedProducts={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
         />
       )}
     </div>

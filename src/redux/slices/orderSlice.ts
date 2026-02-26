@@ -3,6 +3,7 @@ import { authApi } from "@/src/api/endpoints";
 import {
   AddToCartPayload,
   AddToCartResponse,
+  CreateOrderRequest,
 } from "@/src/api/endpoints/interfaces";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -23,6 +24,18 @@ export const getAllOrders = createAsyncThunk(
       return rejectWithValue(
         error.response?.message ?? "Failed to fetch orders",
       );
+    }
+  },
+);
+
+export const CreateOrder = createAsyncThunk(
+  "orders/CreateOrder",
+  async (data: CreateOrderRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.createOrder(data);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Failed to create Order");
     }
   },
 );
@@ -71,7 +84,6 @@ const orderSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
 });
 
 export default orderSlice.reducer;

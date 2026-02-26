@@ -248,3 +248,82 @@ export interface SearchContactResponse {
   mobile_no: string;
   description: string;
 }
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  admin: {
+    adminId: string;
+    email: string;
+    token?: string;
+  };
+}
+
+export interface TotalCountResponse {
+  totalUsers: number;
+  totalProducts: number;
+  totalPosts: number;
+  totalOrders: number;
+  totalContactForms: number;
+  lastUserAdded: string;
+  lastOrderAdded: string;
+  lastPostAdded: string;
+  lastContactAdded: string;
+  lastProductAdded: string;
+}
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name?: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+  };
+}
+
+export interface LogoutResponse {
+  message: string;
+}
+
+export interface CreateOrderRequest {
+  product_id: string;
+  user_id: string;
+  user_first_name: string;
+  user_last_name: string;
+  product_name: string;
+  email: string;
+  status: string;
+  address: string;
+  mobile_no: number;
+  total_price: number;
+  product_quan: number;
+}
+
+export interface CreateOrderResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    product_id: string;
+    user_id: string;
+    user_first_name: string;
+    user_last_name: string;
+    product_name: string;
+    email: string;
+    status: string;
+    address: string;
+    mobile_no: number;
+    total_price: number;
+    product_quan: number;
+    _id: number;
+  };
+}
