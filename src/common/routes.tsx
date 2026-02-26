@@ -7,6 +7,7 @@ const routes = {
   orders: "/orders",
   products: "/products",
   contacts: "/contact-forms",
+  posts: "/posts",
 };
 
 export default routes;

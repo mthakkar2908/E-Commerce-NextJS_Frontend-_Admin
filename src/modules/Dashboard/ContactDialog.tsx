@@ -32,8 +32,8 @@ const ContactDialog = ({ open, setOpen }: ContactDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-6xl w-full">
-        <DialogTitle className="text-2xl font-bold mb-4">
+      <DialogContent className="max-w-6xl w-full bg-white dark:bg-black">
+        <DialogTitle className="text-2xl font-bold mb-4 text-black dark:text-white">
           Contact Forms
         </DialogTitle>
 
@@ -45,7 +45,7 @@ const ContactDialog = ({ open, setOpen }: ContactDialogProps) => {
           ) : (
             <table className="w-full text-sm text-left border-collapse">
               <thead className="sticky top-0 z-10">
-                <tr>
+                <tr className="text-black dark:text-white">
                   <th className="px-4 py-3 border-b font-semibold">Name</th>
                   <th className="px-4 py-3 border-b font-semibold">Email</th>
                   <th className="px-4 py-3 border-b font-semibold">Title</th>
@@ -62,7 +62,7 @@ const ContactDialog = ({ open, setOpen }: ContactDialogProps) => {
                 {contactData.map((contact, index) => (
                   <tr
                     key={contact._id}
-                    className={`transition duration-200 ${
+                    className={`transition duration-200 text-black dark:text-white ${
                       index % 2 === 0 ? "" : ""
                     }`}
                   >

@@ -66,8 +66,10 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-200">
-        <DialogTitle>Products List</DialogTitle>
+      <DialogContent className="w-200 bg-white dark:bg-black">
+        <DialogTitle className="text-black dark:text-white">
+          Products List
+        </DialogTitle>
 
         <div>
           <input
@@ -75,7 +77,7 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full text-gray-600 dark:text-gray-400"
           />
         </div>
 
@@ -94,7 +96,10 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({
               </thead>
               <tbody>
                 {products?.map((product) => (
-                  <tr key={product?._id} className="hover:bg-gray-700">
+                  <tr
+                    key={product?._id}
+                    className="hover:bg-gray-400 dark:hover:bg-gray-700 text-black dark:text-white"
+                  >
                     <td className="p-2 border">{product?.name}</td>
                     <td className="p-2 border">{product?.about_product}</td>
                     <td className="p-2 border">₹ {product?.price}</td>

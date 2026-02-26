@@ -1,5 +1,7 @@
 import { apiClient } from "../client";
 import {
+  AddPostRequest,
+  AddPostResponse,
   AddQuantityPayload,
   AddQuantityResponse,
   AddToCartPayload,
@@ -184,5 +186,9 @@ export const authApi = {
     data: CreateOrderRequest,
   ): Promise<CreateOrderResponse> => {
     return apiClient.post<CreateOrderResponse>("/orders/createOrder", data);
+  },
+
+  createPost: async (data: AddPostRequest): Promise<AddPostResponse> => {
+    return apiClient.post<AddPostResponse>("/posts", data);
   },
 };

@@ -12,6 +12,7 @@ import {
 } from "@/src/redux/slices/productSlice";
 import toast from "react-hot-toast";
 import { Trash2 } from "lucide-react";
+import { formats, modules } from "@/src/utils/helper";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
@@ -106,6 +107,8 @@ const Terms = () => {
           placeholder="Write a text to add a terms & conditions"
           value={termsData}
           onChange={setTermsData}
+          modules={modules}
+          formats={formats}
         />
 
         <div className="flex justify-between">

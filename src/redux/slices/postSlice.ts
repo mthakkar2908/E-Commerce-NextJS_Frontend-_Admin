@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
 import {
+  AddPostRequest,
   InviteUserRequest,
   UnsubscribeChannelRequest,
 } from "@/src/api/endpoints/interfaces";
@@ -80,6 +81,19 @@ export const deletePost = createAsyncThunk(
   },
 );
 
+export const addPost = createAsyncThunk(
+  "posts/addPost",
+  async (formData: AddPostRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.createPost(formData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add post",
+      );
+    }
+  },
+);
 const postSlice = createSlice({
   name: "post",
   initialState,

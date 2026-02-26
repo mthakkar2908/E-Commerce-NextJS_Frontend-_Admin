@@ -27,7 +27,7 @@ const cards = [
   {
     title: "Posts",
     description: "Total Posts",
-    more: false,
+    more: true,
   },
   {
     title: "Orders",
@@ -99,9 +99,12 @@ const Dashboard = () => {
       if (title === "Products") {
         localStorage.setItem("activeState", "products");
         await router.push(routes.products);
-      } else {
+      } else if (title === "Contact forms") {
         localStorage.setItem("activeState", "contacts");
         await router.push(routes.contacts);
+      } else {
+        localStorage.setItem("activeState", "posts");
+        await router.push(routes.posts);
       }
     } catch (error) {
       toast.error("Failed to navigate");

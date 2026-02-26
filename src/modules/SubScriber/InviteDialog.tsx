@@ -36,8 +36,10 @@ const InviteDialog: React.FC<inviteProps> = ({ open, setOpen, userId }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-lg w-full">
-        <DialogTitle className="text-xl">Invite Peoples</DialogTitle>
+      <DialogContent className="max-w-lg w-full bg-white dark:bg-black">
+        <DialogTitle className="text-xl text-black dark:text-white">
+          Invite Peoples
+        </DialogTitle>
 
         <div className="flex flex-col gap-5">
           <div>
@@ -48,7 +50,7 @@ const InviteDialog: React.FC<inviteProps> = ({ open, setOpen, userId }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter email to invite.."
-              className="w-full h-10 p-2 text-gray-500 text-lg"
+              className="w-full h-10 p-2 text-gray-500 border border-gray-500 text-lg"
             />
           </div>
           <div className="flex justify-center items-center">

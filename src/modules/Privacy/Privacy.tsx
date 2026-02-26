@@ -12,6 +12,7 @@ import {
 } from "@/src/redux/slices/productSlice";
 import toast from "react-hot-toast";
 import { Trash2 } from "lucide-react";
+import { formats, modules } from "@/src/utils/helper";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
@@ -104,6 +105,8 @@ const PrivacyPolicy = () => {
           placeholder="Write a text to add a privacy policy"
           value={privacyData}
           onChange={setPrivacyData}
+          modules={modules}
+          formats={formats}
         />
 
         <div className="flex justify-between">

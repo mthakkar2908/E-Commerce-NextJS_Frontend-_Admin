@@ -141,11 +141,11 @@ const UsersDialog: React.FC<ViewProps> = ({
                     alt="Profile_image"
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  <p>{user.name}</p>
-                  <p>{user.email}</p>
+                  <p className="text-black dark:text-white">{user.name}</p>
+                  <p className="text-black dark:text-white">{user.email}</p>
                 </div>
                 <button
-                  className="cursor-pointer"
+                  className="cursor-pointer text-black dark:text-white"
                   onClick={() => handleDeleteClick(user._id)}
                 >
                   <Trash2 />

@@ -327,3 +327,24 @@ export interface CreateOrderResponse {
     _id: number;
   };
 }
+
+export interface AddPostRequest {
+  userId: string;
+  name: string;
+  post_description: string;
+  email: string;
+  image: File;
+}
+
+export interface AddPostResponse {
+  _id: string;
+  name: string;
+  post_description: string;
+  email: string;
+  imageUrl: string | null;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+}

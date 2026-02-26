@@ -210,7 +210,7 @@ const Products = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search your products..."
-          className="h-10 w-full p-3 pr-10 rounded-4xl border border-gray-300 focus:outline-none"
+          className="h-10 w-full p-3 pr-10 rounded-4xl border border-gray-300 text-gray-700 dark:text-white focus:outline-none"
         />
         <CircleX
           onClick={() => setSearchTerm("")}

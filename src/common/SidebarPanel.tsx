@@ -16,6 +16,7 @@ import {
   Package,
   ShoppingBag,
   Users,
+  PenLine,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -91,6 +92,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
       pathname.includes("contact")
     )
       setActive("contacts");
+    else if (pathname.includes("/posts")) setActive("posts");
     else setActive("dashboard");
   }, [pathname]);
 
@@ -104,13 +106,13 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
 
   return (
     <div
-      className={`shrink-0 h-screen max-h-screen overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out ${
+      className={`shrink-0 h-screen max-h-screen overflow-y-auto scrollbar overflow-x-hidden transition-all duration-300 ease-in-out ${
         isDark ? "bg-gray-800" : "bg-gray-400"
       } ${isDark ? "text-white" : "text-black"} flex flex-col pt-6 border-r ${
         isDark ? "border-gray-700" : "border-gray-200"
       } ${collapsed ? "items-center" : "items-start px-4"}`}
     >
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full mb-4">
         {!collapsed && (
           <h1
             onClick={() => {
@@ -225,6 +227,23 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
               <Users size={22} />
             ) : (
               <span className="truncate">Contacts</span>
+            )}
+          </Link>
+
+          <Link
+            href={routes.posts}
+            title={collapsed ? "Posts" : ""}
+            onClick={() => setActive("posts")}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "posts" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? (
+              <PenLine size={22} />
+            ) : (
+              <span className="truncate">Posts</span>
             )}
           </Link>
 

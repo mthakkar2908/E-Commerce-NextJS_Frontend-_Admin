@@ -3,8 +3,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { GetAllPostResponse } from "@/src/api/endpoints/interfaces";
 import { useAppDispatch } from "@/src/redux/hooks";
-import { deletePost, getAllPosts } from "@/src/redux/slices/postSlice";
-import { Trash2 } from "lucide-react";
+import { getAllPosts } from "@/src/redux/slices/postSlice";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -14,11 +13,7 @@ interface ViewPostsProps {
   onDeleteSuccess: () => void;
 }
 
-const PostsDialog: React.FC<ViewPostsProps> = ({
-  open,
-  setOpen,
-  onDeleteSuccess,
-}) => {
+const PostsDialog: React.FC<ViewPostsProps> = ({ open, setOpen }) => {
   const [posts, setPosts] = useState<GetAllPostResponse[]>();
   const dispatch = useAppDispatch();
 
@@ -36,21 +31,12 @@ const PostsDialog: React.FC<ViewPostsProps> = ({
     }
   }, [dispatch, open]);
 
-  const handleDeletePost = async (id: string) => {
-    try {
-      const res = await dispatch(deletePost(id)).unwrap();
-      onDeleteSuccess();
-      setOpen(false);
-      toast.success(res.message ?? "Post Deleted Successfully");
-    } catch (error) {
-      toast.error((error as any) ?? "Failed to Delete Posts");
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-210 w-full max-h-150 h-full overflow-y-auto">
-        <DialogTitle>Posts List</DialogTitle>
+      <DialogContent className="max-w-210 w-full max-h-150 h-auto overflow-y-auto bg-white dark:bg-black">
+        <DialogTitle className="text-black dark:text-white">
+          Posts List
+        </DialogTitle>
 
         <div className="overflow-x-auto mt-4">
           {posts?.length === 0 ? (
@@ -65,12 +51,14 @@ const PostsDialog: React.FC<ViewPostsProps> = ({
                   <th className="p-2 border">Post email</th>
                   <th className="p-2 border">User name</th>
                   <th className="p-2 border">User email</th>
-                  <th className="p-2 border">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {posts?.map((post) => (
-                  <tr key={post?._id} className="hover:bg-gray-700">
+                  <tr
+                    key={post?._id}
+                    className="hover:bg-gray-400 dark:hover:bg-gray-700 text-black dark:text-white"
+                  >
                     <td className="p-2 border">
                       {post.imageUrl ? (
                         <img
@@ -87,12 +75,6 @@ const PostsDialog: React.FC<ViewPostsProps> = ({
                     <td className="p-2 border">{post?.email}</td>
                     <td className="p-2 border">{post?.user?.name}</td>
                     <td className="p-2 border">{post?.user?.email}</td>
-                    <td className="p-2 border">
-                      <Trash2
-                        onClick={() => handleDeletePost(post?._id)}
-                        className="ml-3 cursor-pointer"
-                      />
-                    </td>
                   </tr>
                 ))}
               </tbody>
