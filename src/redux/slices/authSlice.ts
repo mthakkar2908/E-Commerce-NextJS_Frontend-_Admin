@@ -1,4 +1,5 @@
-import { authApi, LoginRequest } from "@/src/api/endpoints";
+import { authApi } from "@/src/api/endpoints";
+import { LoginRequest } from "@/src/api/endpoints/interfaces";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface User {
