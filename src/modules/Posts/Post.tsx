@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -8,72 +9,79 @@ import { deletePost, getAllPosts } from "@/src/redux/slices/postSlice";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import CreatePostDialog from "./CreatePostDialog";
 
 const Posts = () => {
   const [posts, setPosts] = useState<GetAllPostResponse[]>([]);
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme.mode);
   const [postLoading, setPostLoading] = useState(false);
+  const [openCreatePost, setOpenCreatePost] = useState(false);
 
   const isDark = theme === "dark";
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setPostLoading(true);
-        const response = await dispatch(getAllPosts()).unwrap();
-        setPosts(response);
-      } catch (error) {
-        toast.error((error as any) ?? "Failed to fetch Posts");
-      } finally {
-        setPostLoading(false);
-      }
-    };
 
+  const fetchOrders = async () => {
+    try {
+      setPostLoading(true);
+      const response = await dispatch(getAllPosts()).unwrap();
+      setPosts(response);
+    } catch (error) {
+      toast.error((error as any) ?? "Failed to fetch Posts");
+    } finally {
+      setPostLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchOrders();
-  }, [dispatch]);
+  }, []);
 
   const handleDeleteClick = (id: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-2">
-        <p>Are you sure you want to delete this Post?</p>
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this Post?</p>
 
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={async () => {
-              try {
-                const res = await dispatch(deletePost(id)).unwrap();
-                setPosts((prevPosts) =>
-                  prevPosts.filter((post) => post._id !== id),
-                );
-                toast.success(res.message ?? "Post Deleted Successfully");
-                toast.dismiss(t.id);
-              } catch (error) {
-                toast.dismiss(t.id);
-                toast.error((error as any) ?? "Failed to delete a Post");
-              }
-            }}
-            className="px-3 py-1 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={async () => {
+                try {
+                  const res = await dispatch(deletePost(id)).unwrap();
+                  setPosts((prevPosts) =>
+                    prevPosts.filter((post) => post._id !== id),
+                  );
+                  toast.success(res.message ?? "Post Deleted Successfully");
+                  toast.dismiss(t.id);
+                } catch (error) {
+                  toast.dismiss(t.id);
+                  toast.error((error as any) ?? "Failed to delete a Post");
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        duration: Infinity,
+      },
+    );
   };
 
   return (
@@ -87,7 +95,10 @@ const Posts = () => {
           >
             Post List
           </h1>{" "}
-          <button className="flex items-center text-base cursor-pointer justify-center gap-2 border border-black dark:border-white hover:bg-blue-400 mb-2 px-3 rounded-3xl">
+          <button
+            onClick={() => setOpenCreatePost(true)}
+            className="flex items-center text-base cursor-pointer justify-center gap-2 border border-black dark:border-white hover:bg-blue-400 mb-2 px-3 rounded-3xl"
+          >
             {" "}
             <Plus size={18} /> Create Post
           </button>
@@ -101,8 +112,8 @@ const Posts = () => {
                   <th className="px-6 py-4 text-left">Post Name</th>
                   <th className="px-6 py-4 text-left">Post Description</th>
                   <th className="px-6 py-4 text-left">Post Email</th>
-                  <th className="px-6 py-4 text-left">User Name</th>
-                  <th className="px-6 py-4 text-left">User Email</th>
+                  <th className="px-6 py-4 text-left">User/Admin Name</th>
+                  <th className="px-6 py-4 text-left">User/Admin Email</th>
                   <th className="px-6 py-4 text-left">Action</th>
                 </tr>
               </thead>
@@ -133,7 +144,7 @@ const Posts = () => {
                       {post.email}
                     </td>
                     <td className="px-6 py-4 dark:text-green-300 text-slate-600 font-medium">
-                      ${post?.user?.name}
+                      {post?.user?.name}
                     </td>
                     <td className="px-6 py-4 dark:text-violet-400 text-slate-600 font-medium">
                       {post?.user?.email}
@@ -160,6 +171,13 @@ const Posts = () => {
           )}
         </div>
       </div>
+      {openCreatePost && (
+        <CreatePostDialog
+          open={openCreatePost}
+          setOpen={setOpenCreatePost}
+          fetchOrders={fetchOrders}
+        />
+      )}
     </div>
   );
 };

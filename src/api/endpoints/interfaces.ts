@@ -348,3 +348,22 @@ export interface AddPostResponse {
     email: string;
   };
 }
+export interface UpdateProductRequest {
+  id: string;
+  name: string;
+  about_product: string;
+  price: number;
+  quan: number;
+}
+
+export interface UpdateProductResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    _id: string;
+    name: string;
+    about_product: string;
+    price: number;
+    quan: number;
+  };
+}

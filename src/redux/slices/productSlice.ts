@@ -3,6 +3,7 @@ import { authApi } from "@/src/api/endpoints";
 import {
   AddQuantityPayload,
   CreateProductRequest,
+  UpdateProductRequest,
 } from "@/src/api/endpoints/interfaces";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -159,6 +160,18 @@ export const deleteTerms = createAsyncThunk(
       return rejectWithValue(
         error.response?.message ?? "Failed to delete Terms & Condition",
       );
+    }
+  },
+);
+
+export const UpdateProducts = createAsyncThunk(
+  "products/UpdateProducts",
+  async (data: UpdateProductRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.updateProduct(data);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Failed to update order.");
     }
   },
 );

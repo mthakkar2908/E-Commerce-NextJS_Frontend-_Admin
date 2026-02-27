@@ -1,23 +1,37 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { CreateProductRequest } from "@/src/api/endpoints/interfaces";
+import {
+  CreateProductRequest,
+  UpdateProductRequest,
+} from "@/src/api/endpoints/interfaces";
 import { useAppDispatch } from "@/src/redux/hooks";
-import { CreateProduct } from "@/src/redux/slices/productSlice";
-import React, { useState } from "react";
+import { CreateProduct, UpdateProducts } from "@/src/redux/slices/productSlice";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Product } from "./Products";
 
 interface ProductDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   fetchProducts: () => void;
+  selectedProductForEdit: Product | null;
+  setSelectedProductForEdit: React.Dispatch<
+    React.SetStateAction<Product | null>
+  >;
+  mode: string;
 }
 
 const ProductDialog = ({
   open,
   setOpen,
   fetchProducts,
+  mode,
+  selectedProductForEdit,
+  setSelectedProductForEdit,
 }: ProductDialogProps) => {
   const [name, setName] = useState("");
   const [about, setabout] = useState("");
@@ -25,6 +39,19 @@ const ProductDialog = ({
   const [quan, setQuan] = useState("");
 
   const dispatch = useAppDispatch();
+
+  const handleEditClick = () => {
+    setName(selectedProductForEdit?.name?.toString() || "");
+    setabout(selectedProductForEdit?.about_product?.toString() || "");
+    setPrice(selectedProductForEdit?.price?.toString() || "");
+    setQuan(selectedProductForEdit?.quan?.toString() || "");
+  };
+
+  useEffect(() => {
+    if (mode === "edit" && selectedProductForEdit) {
+      handleEditClick();
+    }
+  }, [mode, selectedProductForEdit]);
 
   const createProduct = async () => {
     try {
@@ -48,11 +75,38 @@ const ProductDialog = ({
     }
   };
 
+  const EditProduct = async () => {
+    try {
+      const productId = selectedProductForEdit?._id?.toString();
+      if (!productId) {
+        toast.error("Product ID is missing");
+        return;
+      }
+      const EditPayload: UpdateProductRequest = {
+        id: productId,
+        name,
+        about_product: about,
+        price: Number(price),
+        quan: Number(quan),
+      };
+
+      const editResponse = await dispatch(UpdateProducts(EditPayload)).unwrap();
+
+      if (editResponse.statusCode === 200) {
+        toast.success(editResponse?.message ?? "Product Updated!");
+        fetchProducts();
+        setOpen(false);
+      }
+    } catch (error) {
+      toast.error((error as any) ?? "Failed to update product");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-full max-w-lg rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl p-6">
         <DialogTitle className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          Create Product
+          {mode === "edit" ? "Edit Product" : "Create Product"}
         </DialogTitle>
 
         <div className="space-y-4">
@@ -170,7 +224,11 @@ const ProductDialog = ({
 
           <button
             onClick={() => {
-              createProduct();
+              if (mode === "edit") {
+                EditProduct();
+              } else {
+                createProduct();
+              }
               setOpen(false);
             }}
             type="submit"
@@ -184,7 +242,7 @@ const ProductDialog = ({
                dark:focus:ring-offset-gray-900
                transition duration-200"
           >
-            Create
+            {mode === "edit" ? "Update" : "Create"}
           </button>
         </div>
       </DialogContent>

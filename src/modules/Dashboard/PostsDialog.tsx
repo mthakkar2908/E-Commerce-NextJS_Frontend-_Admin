@@ -49,8 +49,8 @@ const PostsDialog: React.FC<ViewPostsProps> = ({ open, setOpen }) => {
                   <th className="p-2 border">Post Name</th>
                   <th className="p-2 border">Post Description</th>
                   <th className="p-2 border">Post email</th>
-                  <th className="p-2 border">User name</th>
-                  <th className="p-2 border">User email</th>
+                  <th className="p-2 border">User/Admin name</th>
+                  <th className="p-2 border">User/Admin email</th>
                 </tr>
               </thead>
               <tbody>

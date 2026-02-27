@@ -9,7 +9,15 @@ import {
   searchProductsByQuery,
   UpdateProductQuantity,
 } from "@/src/redux/slices/productSlice";
-import { ShoppingCart, Trash2, X, Plus, Check, CircleX } from "lucide-react";
+import {
+  ShoppingCart,
+  Trash2,
+  X,
+  Plus,
+  Check,
+  CircleX,
+  Pencil,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ProductDialog from "./ProductDialog";
@@ -52,6 +60,10 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
   const [openOrder, setOpenOrder] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProductForEdit, setSelectedProductForEdit] =
+    useState<Product | null>(null);
+
+  const [mode, setMode] = useState<"create" | "edit">("create");
 
   const debounce = useDebounce(searchTerm, 500);
 
@@ -87,6 +99,7 @@ const Products = () => {
 
   const handleCreateProductOpen = () => {
     setIsProductOpen(true);
+    setMode("create");
   };
 
   const hasOpenEnterValue = (productId: string) => {
@@ -139,56 +152,67 @@ const Products = () => {
   };
 
   const handleDeleteClick = (id: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-2">
-        <p>Are you sure you want to delete this Product?</p>
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this Product?</p>
 
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={async () => {
-              try {
-                const res = await dispatch(deleteProduct(id)).unwrap();
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={async () => {
+                try {
+                  const res = await dispatch(deleteProduct(id)).unwrap();
 
-                setProducts((prevProducts) =>
-                  prevProducts?.filter(
-                    (product) => product._id !== res.deleteProduct._id,
-                  ),
-                );
-                toast.dismiss(t.id);
-                fetchProducts();
-                toast.success(res.message ?? "product deleted successfully.");
-              } catch (error) {
-                toast.dismiss(t.id);
-                toast.error((error as any) ?? "failed to delete Product");
-              }
-            }}
-            className="px-3 py-1 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+                  setProducts((prevProducts) =>
+                    prevProducts?.filter(
+                      (product) => product._id !== res.deleteProduct._id,
+                    ),
+                  );
+                  toast.dismiss(t.id);
+                  fetchProducts();
+                  toast.success(res.message ?? "product deleted successfully.");
+                } catch (error) {
+                  toast.dismiss(t.id);
+                  toast.error((error as any) ?? "failed to delete Product");
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        duration: Infinity,
+      },
+    );
   };
 
   const handleCreateOrderClick = (product: Product) => {
     setOpenOrder(true);
     setSelectedProduct(product);
+  };
+
+  const handleEditProductClick = (product: Product) => {
+    setMode("edit");
+    setIsProductOpen(true);
+    setSelectedProductForEdit(product);
   };
 
   return (
@@ -231,7 +255,7 @@ const Products = () => {
                 <th className="px-6 py-4 text-left">About</th>
                 <th className="px-6 py-4 text-left">Price</th>
                 <th className="px-6 py-4 text-left">Quantity</th>
-                <th className="px-6 py-4 text-center">Action</th>
+                <th className="px-6 py-4 text-center">Actions</th>
                 <th className="px-6 py-4 text-center">Cart</th>
                 <th className="px-6 py-4 text-center">Orders</th>
               </tr>
@@ -304,15 +328,27 @@ const Products = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleDeleteClick(product._id)}
-                      className="p-2 rounded-xl bg-red-500/20 text-red-400 
-               hover:bg-red-500 hover:text-white 
-               transition-all duration-200 
-               hover:scale-110 active:scale-95 cursor-pointer"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex justify-center items-center gap-2">
+                      <button
+                        onClick={() => handleEditProductClick(product)}
+                        className="p-2 rounded-xl bg-blue-500/20 text-blue-400 
+      hover:bg-blue-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Pencil size={18} />
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteClick(product._id)}
+                        className="p-2 rounded-xl bg-red-500/20 text-red-400 
+      hover:bg-red-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                   <td>
                     <div className="flex items-center justify-center gap-2">
@@ -469,6 +505,9 @@ const Products = () => {
           open={isProductOpen}
           setOpen={setIsProductOpen}
           fetchProducts={fetchProducts}
+          selectedProductForEdit={selectedProductForEdit}
+          setSelectedProductForEdit={setSelectedProductForEdit}
+          mode={mode}
         />
       )}
 

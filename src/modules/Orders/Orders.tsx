@@ -55,48 +55,53 @@ const Orders = () => {
   }, [dispatch, debounce]);
 
   const handleDeleteClick = (id: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-2">
-        <p>Are you sure you want to delete this Order?</p>
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this Order?</p>
 
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={async () => {
-              try {
-                await dispatch(deleteOrder(id)).unwrap();
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={async () => {
+                try {
+                  await dispatch(deleteOrder(id)).unwrap();
 
-                setOrders((prevOrders) =>
-                  prevOrders.filter((order) => order._id !== id),
-                );
-                toast.dismiss(t.id);
-                toast.success("Order deleted successfully");
-              } catch (error) {
-                toast.dismiss(t.id);
-                toast.error((error as any) ?? "Failed to delete an order");
-              }
-            }}
-            className="px-3 py-1 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+                  setOrders((prevOrders) =>
+                    prevOrders.filter((order) => order._id !== id),
+                  );
+                  toast.dismiss(t.id);
+                  toast.success("Order deleted successfully");
+                } catch (error) {
+                  toast.dismiss(t.id);
+                  toast.error((error as any) ?? "Failed to delete an order");
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        duration: Infinity,
+      },
+    );
   };
 
   return (

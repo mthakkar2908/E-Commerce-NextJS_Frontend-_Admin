@@ -33,7 +33,6 @@ const UsersDialog: React.FC<ViewProps> = ({
       setUserLoading(true);
       try {
         const response = await dispatch(getAllUsers());
-        console.log("Response of get Data", response);
         setUsers(response.payload as getUsersResponse[]);
       } catch (error) {
         console.error(error);
@@ -46,44 +45,49 @@ const UsersDialog: React.FC<ViewProps> = ({
   }, [dispatch]);
 
   const handleDeleteClick = (id: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-2">
-        <p>Are you sure you want to delete this user?</p>
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this user?</p>
 
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            style={{ cursor: "pointer" }}
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              style={{ cursor: "pointer" }}
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              try {
-                await dispatch(deleteUsers(id)).unwrap();
+            <button
+              type="button"
+              style={{ cursor: "pointer" }}
+              onClick={async () => {
+                try {
+                  await dispatch(deleteUsers(id)).unwrap();
 
-                setUsers((prev) => prev?.filter((user) => user._id !== id));
-                onDeleteSuccess();
+                  setUsers((prev) => prev?.filter((user) => user._id !== id));
+                  onDeleteSuccess();
 
-                toast.dismiss(t.id);
-                toast.success("User Deleted Successfully.");
-              } catch {
-                toast.dismiss(t.id);
-                toast.error("Failed to delete user");
-              }
-            }}
-            className="px-3 py-1 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+                  toast.dismiss(t.id);
+                  toast.success("User Deleted Successfully.");
+                } catch {
+                  toast.dismiss(t.id);
+                  toast.error("Failed to delete user");
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        duration: Infinity,
+      },
+    );
   };
 
   const filteredUsers = useMemo(() => {

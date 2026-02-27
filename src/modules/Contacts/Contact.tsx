@@ -38,45 +38,50 @@ const Contact = () => {
   }, [dispatch, debounce]);
 
   const handleDeleteClick = (id: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-2">
-        <p>Are you sure you want to delete this contact?</p>
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this contact?</p>
 
-        <div className="flex gap-2 justify-end">
-          <button
-            type="button"
-            style={{ cursor: "pointer" }}
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              style={{ cursor: "pointer" }}
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
 
-          <button
-            type="button"
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              try {
-                const res = await dispatch(deleteConact(id)).unwrap();
-                setContactData((prevData) =>
-                  prevData.filter(
-                    (contact) => contact._id !== res.deletedContact._id,
-                  ),
-                );
-                toast.success(res.message);
-                toast.dismiss(t.id);
-              } catch {
-                toast.dismiss(t.id);
-                toast.error("Failed to delete contact");
-              }
-            }}
-            className="px-3 py-1 bg-red-500 text-white rounded"
-          >
-            Delete
-          </button>
+            <button
+              type="button"
+              style={{ cursor: "pointer" }}
+              onClick={async () => {
+                try {
+                  const res = await dispatch(deleteConact(id)).unwrap();
+                  setContactData((prevData) =>
+                    prevData.filter(
+                      (contact) => contact._id !== res.deletedContact._id,
+                    ),
+                  );
+                  toast.success(res.message);
+                  toast.dismiss(t.id);
+                } catch {
+                  toast.dismiss(t.id);
+                  toast.error("Failed to delete contact");
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    ));
+      ),
+      {
+        duration: Infinity,
+      },
+    );
   };
 
   return (

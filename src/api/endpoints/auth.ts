@@ -38,6 +38,8 @@ import {
   TotalCountResponse,
   UnSubscribeChannel,
   UnsubscribeChannelRequest,
+  UpdateProductRequest,
+  UpdateProductResponse,
 } from "./interfaces";
 
 export const authApi = {
@@ -187,8 +189,15 @@ export const authApi = {
   ): Promise<CreateOrderResponse> => {
     return apiClient.post<CreateOrderResponse>("/orders/createOrder", data);
   },
-
   createPost: async (data: AddPostRequest): Promise<AddPostResponse> => {
     return apiClient.post<AddPostResponse>("/posts", data);
+  },
+  updateProduct: async (
+    data: UpdateProductRequest,
+  ): Promise<UpdateProductResponse> => {
+    return apiClient.put<UpdateProductResponse>(
+      "/products/updateProduct",
+      data,
+    );
   },
 };
