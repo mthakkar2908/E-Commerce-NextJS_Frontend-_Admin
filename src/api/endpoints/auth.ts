@@ -38,6 +38,10 @@ import {
   TotalCountResponse,
   UnSubscribeChannel,
   UnsubscribeChannelRequest,
+  updateContactRequest,
+  updateContactResponse,
+  updatePostRequest,
+  updatePostResponse,
   UpdateProductRequest,
   UpdateProductResponse,
 } from "./interfaces";
@@ -197,6 +201,20 @@ export const authApi = {
   ): Promise<UpdateProductResponse> => {
     return apiClient.put<UpdateProductResponse>(
       "/products/updateProduct",
+      data,
+    );
+  },
+  updateContact: async (
+    data: updateContactRequest,
+  ): Promise<updateContactResponse> => {
+    return apiClient.put<updateContactResponse>("/contact/updateContact", data);
+  },
+  updatePost: async (
+    data: updatePostRequest,
+    postId: string,
+  ): Promise<updatePostResponse> => {
+    return apiClient.post<updatePostResponse>(
+      `/posts/updatePost/${postId}`,
       data,
     );
   },

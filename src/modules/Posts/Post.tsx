@@ -6,10 +6,22 @@
 import { GetAllPostResponse } from "@/src/api/endpoints/interfaces";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { deletePost, getAllPosts } from "@/src/redux/slices/postSlice";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CreatePostDialog from "./CreatePostDialog";
+
+export type Post = {
+  _id: string;
+  imageUrl: string | null;
+  name: string;
+  post_description: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+};
 
 const Posts = () => {
   const [posts, setPosts] = useState<GetAllPostResponse[]>([]);
@@ -17,6 +29,8 @@ const Posts = () => {
   const theme = useAppSelector((state) => state.theme.mode);
   const [postLoading, setPostLoading] = useState(false);
   const [openCreatePost, setOpenCreatePost] = useState(false);
+  const [mode, setMode] = useState<"create" | "edit">("create");
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const isDark = theme === "dark";
 
@@ -84,6 +98,11 @@ const Posts = () => {
     );
   };
 
+  const handleEditPostClick = (post: Post) => {
+    setMode("edit");
+    setOpenCreatePost(true);
+    setSelectedPost(post);
+  };
   return (
     <div className="p-8">
       <div className="max-w-6xl">
@@ -96,14 +115,17 @@ const Posts = () => {
             Post List
           </h1>{" "}
           <button
-            onClick={() => setOpenCreatePost(true)}
+            onClick={() => {
+              setOpenCreatePost(true);
+              setMode("create");
+            }}
             className="flex items-center text-base cursor-pointer justify-center gap-2 border border-black dark:border-white hover:bg-blue-400 mb-2 px-3 rounded-3xl"
           >
             {" "}
             <Plus size={18} /> Create Post
           </button>
         </div>
-        <div className="overflow-x-auto  rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
+        <div className="overflow-x-auto scrollbar rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
           {posts.length > 0 ? (
             <table className="w-full text-sm">
               <thead>
@@ -114,7 +136,7 @@ const Posts = () => {
                   <th className="px-6 py-4 text-left">Post Email</th>
                   <th className="px-6 py-4 text-left">User/Admin Name</th>
                   <th className="px-6 py-4 text-left">User/Admin Email</th>
-                  <th className="px-6 py-4 text-left">Action</th>
+                  <th className="px-6 py-4 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -151,12 +173,27 @@ const Posts = () => {
                     </td>
 
                     <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleDeleteClick(post._id)}
-                        className="p-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-                      >
-                        <Trash2 size={18} />
-                      </button>{" "}
+                      <div className="flex justify-center items-center gap-2">
+                        <button
+                          onClick={() => handleEditPostClick(post)}
+                          className="p-2 rounded-xl bg-blue-500/20 text-blue-400 
+      hover:bg-blue-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                        >
+                          <Pencil size={18} />
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteClick(post._id)}
+                          className="p-2 rounded-xl bg-red-500/20 text-red-400 
+      hover:bg-red-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -176,6 +213,8 @@ const Posts = () => {
           open={openCreatePost}
           setOpen={setOpenCreatePost}
           fetchOrders={fetchOrders}
+          selectedPost={selectedPost}
+          mode={mode}
         />
       )}
     </div>

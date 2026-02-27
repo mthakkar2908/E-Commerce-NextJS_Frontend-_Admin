@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -6,16 +7,25 @@ import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { addPost } from "@/src/redux/slices/postSlice";
 import { Upload } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Post } from "./Post";
 
 interface CreatePostProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   fetchOrders: () => void;
+  selectedPost: Post | null;
+  mode: string;
 }
 
-const CreatePostDialog = ({ open, setOpen, fetchOrders }: CreatePostProps) => {
+const CreatePostDialog = ({
+  open,
+  setOpen,
+  fetchOrders,
+  selectedPost,
+  mode,
+}: CreatePostProps) => {
   const user = useAppSelector((state) => state.auth.user);
   const userId = user?.adminId;
   const dispatch = useAppDispatch();
@@ -29,6 +39,58 @@ const CreatePostDialog = ({ open, setOpen, fetchOrders }: CreatePostProps) => {
   };
   const [formData, setFormData] = React.useState(initialValues);
   const [postLoading, setPostLoading] = useState(false);
+
+  const convertImageUrlToFile = async (
+    imageUrl: string,
+  ): Promise<File | null> => {
+    try {
+      let absoluteUrl = imageUrl;
+      if (imageUrl.startsWith("/")) {
+        absoluteUrl = `${process.env.NEXT_PUBLIC_API_URL}${imageUrl}`;
+      }
+      const response = await fetch(absoluteUrl);
+      if (!response.ok) {
+        console.error("Failed to fetch image:", response.status);
+        return null;
+      }
+
+      const blob = await response.blob();
+
+      const fileName = imageUrl.split("/").pop() || "image.jpg";
+
+      const file = new File([blob], fileName, {
+        type: blob.type || "image/jpeg",
+      });
+
+      return file;
+    } catch (error) {
+      console.error("Error converting image URL to file:", error);
+      return null;
+    }
+  };
+
+  const fillDetails = async () => {
+    setFormData({
+      userId: selectedPost?.user._id ?? "",
+      name: selectedPost?.name ?? "",
+      post_description: selectedPost?.post_description ?? "",
+      email: selectedPost?.user?.email ?? "",
+      image: selectedPost?.imageUrl ?? "",
+    });
+    if (selectedPost?.imageUrl) {
+      const file = await convertImageUrlToFile(selectedPost.imageUrl);
+      console.log("file is : ", file);
+      if (file) {
+        setSelectedImages([file]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (mode === "edit" && selectedPost) {
+      fillDetails();
+    }
+  }, [selectedPost]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,

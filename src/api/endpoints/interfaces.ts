@@ -367,3 +367,42 @@ export interface UpdateProductResponse {
     quan: number;
   };
 }
+
+export interface updateContactRequest {
+  id: string;
+  name: string;
+  email: string;
+  title: string;
+  mobile_no: string;
+  description: string;
+}
+
+export interface updateContactResponse {
+  message: string;
+  data: {
+    _id: string;
+    name: string;
+    email: string;
+    title: string;
+    mobile_no: string;
+    description: string;
+  };
+}
+
+export interface updatePostResponse {
+  _id: string;
+  name: string;
+  post_description: string;
+  email: string;
+  imageUrl: string;
+  user: string;
+  admin: string;
+}
+
+export interface updatePostRequest {
+  userId: string;
+  name: string;
+  post_descripton: string;
+  email: string;
+  image: File;
+}

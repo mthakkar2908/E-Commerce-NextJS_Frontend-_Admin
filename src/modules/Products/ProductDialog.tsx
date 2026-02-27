@@ -19,9 +19,6 @@ interface ProductDialogProps {
   setOpen: (open: boolean) => void;
   fetchProducts: () => void;
   selectedProductForEdit: Product | null;
-  setSelectedProductForEdit: React.Dispatch<
-    React.SetStateAction<Product | null>
-  >;
   mode: string;
 }
 
@@ -31,7 +28,6 @@ const ProductDialog = ({
   fetchProducts,
   mode,
   selectedProductForEdit,
-  setSelectedProductForEdit,
 }: ProductDialogProps) => {
   const [name, setName] = useState("");
   const [about, setabout] = useState("");

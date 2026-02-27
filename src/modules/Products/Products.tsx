@@ -506,7 +506,6 @@ const Products = () => {
           setOpen={setIsProductOpen}
           fetchProducts={fetchProducts}
           selectedProductForEdit={selectedProductForEdit}
-          setSelectedProductForEdit={setSelectedProductForEdit}
           mode={mode}
         />
       )}

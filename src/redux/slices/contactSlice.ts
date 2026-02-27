@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
+import { updateContactRequest } from "@/src/api/endpoints/interfaces";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -45,6 +46,18 @@ export const searchContacts = createAsyncThunk(
       return response;
     } catch (error: any) {
       return rejectWithValue(error?.message ?? "Faild to search contact");
+    }
+  },
+);
+
+export const UpdateContact = createAsyncThunk(
+  "contacts/UpdateContact",
+  async (data: updateContactRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.updateContact(data);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Failed to update product");
     }
   },
 );

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 "use client";
 
 import { ContactFormResponse } from "@/src/api/endpoints/interfaces";
@@ -8,32 +10,43 @@ import {
   getAllContacts,
   searchContacts,
 } from "@/src/redux/slices/contactSlice";
-import { CircleX, Plus, Trash2 } from "lucide-react";
+import { CircleX, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import UpdateContactDialog from "./UpdateContactDialog";
+
+export type Contact = {
+  _id: string;
+  name: string;
+  email: string;
+  title: string;
+  mobile_no: string;
+  description: string;
+};
 
 const Contact = () => {
   const [contactData, setContactData] = useState<ContactFormResponse[]>([]);
   const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState("");
+  const [openContact, setOpenContact] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   const debounce = useDebounce(searchTerm, 500);
 
-  useEffect(() => {
-    const fetchContactForms = async () => {
-      try {
-        if (debounce) {
-          const res = await dispatch(searchContacts(debounce)).unwrap();
-          setContactData(res);
-          return;
-        }
-        const res = await dispatch(getAllContacts()).unwrap();
+  const fetchContactForms = async () => {
+    try {
+      if (debounce) {
+        const res = await dispatch(searchContacts(debounce)).unwrap();
         setContactData(res);
-      } catch (error) {
-        toast.error((error as string) ?? "Failed to fetch Contact forms data");
+        return;
       }
-    };
-
+      const res = await dispatch(getAllContacts()).unwrap();
+      setContactData(res);
+    } catch (error) {
+      toast.error((error as string) ?? "Failed to fetch Contact forms data");
+    }
+  };
+  useEffect(() => {
     fetchContactForms();
   }, [dispatch, debounce]);
 
@@ -84,6 +97,11 @@ const Contact = () => {
     );
   };
 
+  const handleEditContactClick = (contact: Contact) => {
+    setOpenContact(true);
+    setSelectedContact(contact);
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br p-8 text-slate-200">
       <div className="flex justify-between">
@@ -119,7 +137,7 @@ const Contact = () => {
                 <th className="px-6 py-4 text-left">Title</th>
                 <th className="px-6 py-4 text-left">Mobile No.</th>
                 <th className="px-6 py-4 text-left">Description</th>
-                <th className="px-6 py-4 text-left">Delete</th>
+                <th className="px-6 py-4 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -144,12 +162,27 @@ const Contact = () => {
                     {contact.description}
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleDeleteClick(contact._id)}
-                      className="p-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex justify-center items-center gap-2">
+                      <button
+                        onClick={() => handleEditContactClick(contact)}
+                        className="p-2 rounded-xl bg-blue-500/20 text-blue-400 
+      hover:bg-blue-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Pencil size={18} />
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteClick(contact._id)}
+                        className="p-2 rounded-xl bg-red-500/20 text-red-400 
+      hover:bg-red-500 hover:text-white 
+      transition-all duration-200 
+      hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -157,6 +190,15 @@ const Contact = () => {
           </table>
         )}
       </div>
+
+      {openContact && (
+        <UpdateContactDialog
+          open={openContact}
+          setOpen={setOpenContact}
+          selectedContact={selectedContact}
+          fetchContactForms={fetchContactForms}
+        />
+      )}
     </div>
   );
 };
