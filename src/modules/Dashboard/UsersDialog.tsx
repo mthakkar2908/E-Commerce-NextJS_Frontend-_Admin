@@ -45,6 +45,7 @@ const UsersDialog: React.FC<ViewProps> = ({
   }, [dispatch]);
 
   const handleDeleteClick = (id: string) => {
+    toast.dismiss();
     toast(
       (t) => (
         <div className="flex flex-col gap-2">

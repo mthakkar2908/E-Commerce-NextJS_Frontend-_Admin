@@ -10,6 +10,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CreatePostDialog from "./CreatePostDialog";
+import { usePathname } from "next/navigation";
 
 export type Post = {
   _id: string;
@@ -31,7 +32,6 @@ const Posts = () => {
   const [openCreatePost, setOpenCreatePost] = useState(false);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
   const isDark = theme === "dark";
 
   const fetchOrders = async () => {
@@ -50,6 +50,7 @@ const Posts = () => {
   }, []);
 
   const handleDeleteClick = (id: string) => {
+    toast.dismiss();
     toast(
       (t) => (
         <div className="flex flex-col gap-2">
@@ -61,7 +62,9 @@ const Posts = () => {
               style={{
                 cursor: "pointer",
               }}
-              onClick={() => toast.dismiss(t.id)}
+              onClick={() => {
+                toast.dismiss(t.id);
+              }}
               className="px-3 py-1 bg-gray-300 rounded"
             >
               Cancel

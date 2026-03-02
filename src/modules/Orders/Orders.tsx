@@ -55,6 +55,7 @@ const Orders = () => {
   }, [dispatch, debounce]);
 
   const handleDeleteClick = (id: string) => {
+    toast.dismiss();
     toast(
       (t) => (
         <div className="flex flex-col gap-2">
@@ -128,7 +129,7 @@ const Orders = () => {
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer dark:hover:text-white hover:text-black "
           />
         </div>
-        <div className="overflow-x-auto  rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
+        <div className="overflow-x-auto scrollbar rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
           {orders.length > 0 ? (
             <table className="w-full text-sm">
               <thead>

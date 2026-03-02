@@ -51,6 +51,7 @@ const Contact = () => {
   }, [dispatch, debounce]);
 
   const handleDeleteClick = (id: string) => {
+    toast.dismiss();
     toast(
       (t) => (
         <div className="flex flex-col gap-2">
@@ -123,7 +124,7 @@ const Contact = () => {
           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer dark:hover:text-white hover:text-black "
         />
       </div>
-      <div className="rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-xl overflow-hidden">
+      <div className="rounded-2xl overflow-x-auto scrollbar backdrop-blur-lg bg-white/5 border border-white/10 shadow-xl overflow-hidden">
         {contactData.length === 0 ? (
           <p className="p-6 text-center text-slate-400">
             No Contact Data found.

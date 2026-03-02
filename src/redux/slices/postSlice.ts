@@ -4,6 +4,7 @@ import {
   AddPostRequest,
   InviteUserRequest,
   UnsubscribeChannelRequest,
+  updatePostRequest,
 } from "@/src/api/endpoints/interfaces";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -91,6 +92,24 @@ export const addPost = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message || "Failed to add post",
       );
+    }
+  },
+);
+
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  async (
+    data: { formData?: updatePostRequest; postId?: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      if (!data.formData || !data.postId) {
+        return rejectWithValue("Form data and post ID are required");
+      }
+      const response = await authApi.updatePost(data.formData, data.postId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || "Failed to update post");
     }
   },
 );

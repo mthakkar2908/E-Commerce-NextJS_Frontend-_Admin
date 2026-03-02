@@ -225,7 +225,6 @@ const Dashboard = () => {
         <ProductsDialog
           open={openViewForProducts}
           setOpen={setOpenViewForProducts}
-          onDeleteSuccess={getData}
         />
       )}
 

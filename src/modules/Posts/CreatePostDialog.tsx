@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { addPost } from "@/src/redux/slices/postSlice";
+import { addPost, updatePost } from "@/src/redux/slices/postSlice";
 import { Upload } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -79,7 +79,6 @@ const CreatePostDialog = ({
     });
     if (selectedPost?.imageUrl) {
       const file = await convertImageUrlToFile(selectedPost.imageUrl);
-      console.log("file is : ", file);
       if (file) {
         setSelectedImages([file]);
       }
@@ -220,35 +219,32 @@ const CreatePostDialog = ({
         apiFormData.append("image", selectedImages[0]);
       }
 
-      // if (mode === "Create") {
-      await dispatch(addPost(apiFormData as any))
-        .unwrap()
-        .then(() => {
-          setFormData(initialValues);
-          setSelectedImages([]);
-          setOpen(false);
-          fetchOrders();
-          toast.success("Post created successfully!");
-        });
-      // }
-      // else if (mode === "Edit" && editingPost) {
-      //   await dispatch(
-      //     UpdatePost({
-      //       formData: apiFormData,
-      //       postId: editingPost?._id,
-      //     }),
-      //   )
-      //     .unwrap()
-      //     .then(() => {
-      //       toast.success("Post updated successfully!");
-      //       fetchPosts();
-      //       setAddDialogOpen(false);
-      //       setFormData(initialValues);
-      //       setSelectedImages([]);
-      //       setEditingPost(null);
-      //       setMode("Create");
-      //     });
-      // }
+      if (mode === "create") {
+        await dispatch(addPost(apiFormData as any))
+          .unwrap()
+          .then(() => {
+            setFormData(initialValues);
+            setSelectedImages([]);
+            setOpen(false);
+            fetchOrders();
+            toast.success("Post created successfully!");
+          });
+      } else if (mode === "edit" && selectedPost) {
+        await dispatch(
+          updatePost({
+            formData: apiFormData as any,
+            postId: selectedPost?._id,
+          }),
+        )
+          .unwrap()
+          .then(() => {
+            toast.success("Post updated successfully!");
+            fetchOrders();
+            setOpen(false);
+            setFormData(initialValues);
+            setSelectedImages([]);
+          });
+      }
     } catch (error) {
       toast.error((error as string) ?? "Failed to create Post");
     } finally {
@@ -260,7 +256,7 @@ const CreatePostDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-150 bg-white dark:bg-black w-full max-h-150 h-auto overflow-auto scrollbar">
         <DialogTitle className="text-black dark:text-white">
-          Create Post
+          {mode === "edit" ? "Edit Post" : "Create Post"}
         </DialogTitle>
 
         <div className="h-full flex items-center justify-center rounded-lg">
@@ -303,7 +299,7 @@ const CreatePostDialog = ({
                       prev.filter((_, i) => i !== index),
                     )
                   }
-                  className="absolute top-1 right-1 bg-black/60 text-white text-xs px-2 py-1 rounded"
+                  className="absolute cursor-pointer top-1 right-1 bg-black/60 text-white text-xs px-2 py-1 rounded"
                 >
                   ✕
                 </button>
@@ -361,7 +357,7 @@ const CreatePostDialog = ({
               handleAddEditPost();
             }}
           >
-            Add Post
+            {mode === "edit" ? "Update Post" : "Add Post"}
           </Button>
         </div>
       </DialogContent>
