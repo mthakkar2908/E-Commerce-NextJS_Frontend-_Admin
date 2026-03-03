@@ -10,7 +10,6 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CreatePostDialog from "./CreatePostDialog";
-import { usePathname } from "next/navigation";
 
 export type Post = {
   _id: string;

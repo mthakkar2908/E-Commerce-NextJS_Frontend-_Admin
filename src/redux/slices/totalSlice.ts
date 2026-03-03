@@ -8,6 +8,7 @@ interface TotalCountState {
   totalUsers: number;
   totalOrders?: number;
   totalContactForms: number;
+  totalCategoris: number;
   loading: boolean;
   error: string | null;
   lastUserAdded: string;
@@ -15,6 +16,7 @@ interface TotalCountState {
   lastPostAdded: string;
   lastContactAdded: string;
   lastProductAdded: string;
+  lastCategoriesAdded: string;
 }
 
 const initialState: TotalCountState = {
@@ -23,7 +25,9 @@ const initialState: TotalCountState = {
   totalUsers: 0,
   totalOrders: 0,
   totalContactForms: 0,
+  totalCategoris: 0,
   lastContactAdded: "",
+  lastCategoriesAdded: "",
   lastOrderAdded: "",
   lastPostAdded: "",
   lastProductAdded: "",
@@ -39,10 +43,12 @@ export const fetchCounts = createAsyncThunk<
     totalUsers: number;
     totalOrders: number;
     totalContactForms: number;
+    totalCategoris: number;
     lastUserAdded: string;
     lastOrderAdded: string;
     lastPostAdded: string;
     lastContactAdded: string;
+    lastCategoriesAdded: string;
     lastProductAdded: string;
   },
   void,
@@ -57,11 +63,13 @@ export const fetchCounts = createAsyncThunk<
       totalUsers: response.totalUsers,
       totalOrders: response.totalOrders,
       totalContactForms: response.totalContactForms,
+      totalCategoris: response.totalCategoris,
       lastUserAdded: response.lastUserAdded,
       lastOrderAdded: response.lastOrderAdded,
       lastPostAdded: response.lastPostAdded,
       lastContactAdded: response.lastContactAdded,
       lastProductAdded: response.lastProductAdded,
+      lastCategoriesAdded: response.lastCategoriesAdded,
     };
   } catch (error: any) {
     return rejectWithValue(
@@ -115,11 +123,13 @@ const countSlice = createSlice({
         state.totalUsers = action.payload.totalUsers;
         state.totalOrders = action.payload.totalOrders;
         state.totalContactForms = action.payload.totalContactForms;
+        state.totalCategoris = action.payload.totalCategoris;
         state.lastUserAdded = action.payload.lastUserAdded;
         state.lastContactAdded = action.payload.lastContactAdded;
         state.lastOrderAdded = action.payload.lastOrderAdded;
         state.lastPostAdded = action.payload.lastPostAdded;
         state.lastProductAdded = action.payload.lastProductAdded;
+        state.lastCategoriesAdded = action.payload.lastCategoriesAdded;
       })
       .addCase(fetchCounts.rejected, (state, action) => {
         state.loading = false;

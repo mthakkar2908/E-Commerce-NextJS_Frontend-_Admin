@@ -34,7 +34,7 @@ interface SidebarProps {
 
 const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
   const dispatch = useAppDispatch();
-  const theme = useAppSelector((state) => state?.theme.mode);
+  const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
   const pathname = usePathname();
   const router = useRouter();
@@ -77,6 +77,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
     if (pathname.includes("/orders")) setActive("orders");
     else if (pathname.includes("/products")) setActive("products");
     else if (pathname.includes("/subscribe")) setActive("subscribe");
+    else if (pathname.includes("/category")) setActive("category");
     else if (
       pathname.includes("/privacy-policy") ||
       pathname.includes("/privacy")
@@ -193,6 +194,23 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
               <Package size={22} />
             ) : (
               <span className="truncate">Orders</span>
+            )}
+          </Link>
+
+          <Link
+            href={routes.category}
+            title={collapsed ? "Category" : ""}
+            onClick={() => setActive("category")}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "category" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""} ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? (
+              <ShoppingBag size={22} />
+            ) : (
+              <span className="truncate">Category</span>
             )}
           </Link>
 

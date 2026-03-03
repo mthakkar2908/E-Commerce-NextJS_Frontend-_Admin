@@ -19,7 +19,6 @@ import {
   GetAllPostResponse,
   GetAllProductsResponse,
   GetSubscribersList,
-  getOrdersResponse,
   getAllOrdersResponse,
   getPrivacyText,
   getTermsText,
@@ -44,6 +43,12 @@ import {
   updatePostResponse,
   UpdateProductRequest,
   UpdateProductResponse,
+  AddCategoryRequest,
+  AddCategoryResponse,
+  GetCategoryFullResponse,
+  deleteCategoryResponse,
+  updateCategoryRequest,
+  updateCategoryResponse,
 } from "./interfaces";
 
 export const authApi = {
@@ -242,6 +247,32 @@ export const authApi = {
   ): Promise<updatePostResponse> => {
     return apiClient.post<updatePostResponse>(
       `/posts/updatePost/${postId}`,
+      data,
+    );
+  },
+  addCategory: async (
+    data: AddCategoryRequest,
+  ): Promise<AddCategoryResponse> => {
+    return apiClient.post<AddCategoryResponse>(`/category`, data);
+  },
+  getCategories: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<GetCategoryFullResponse> => {
+    return apiClient.get<GetCategoryFullResponse>(
+      `/category/getCategory?page=${page}&pageSize=${pageSize}`,
+    );
+  },
+  deleteCategory: async (id: string): Promise<deleteCategoryResponse> => {
+    return apiClient.delete<deleteCategoryResponse>(
+      `/category/deleteCategory/${id}`,
+    );
+  },
+  updateCategory: async (
+    data: updateCategoryRequest,
+  ): Promise<updateCategoryResponse> => {
+    return apiClient.post<updateCategoryResponse>(
+      `/category/updateCategory`,
       data,
     );
   },

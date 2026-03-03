@@ -290,11 +290,13 @@ export interface TotalCountResponse {
   totalPosts: number;
   totalOrders: number;
   totalContactForms: number;
+  totalCategoris: number;
   lastUserAdded: string;
   lastOrderAdded: string;
   lastPostAdded: string;
   lastContactAdded: string;
   lastProductAdded: string;
+  lastCategoriesAdded: string;
 }
 export interface RegisterRequest {
   email: string;
@@ -425,5 +427,64 @@ export interface updatePostRequest {
   name: string;
   post_descripton: string;
   email: string;
+  image: File;
+}
+
+export interface AddCategoryRequest {
+  name: string;
+  description: string;
+  image: File;
+  isActive: boolean;
+}
+
+export interface AddCategoryResponse {
+  name: string;
+  description: string;
+  image: string;
+  isActive: boolean;
+  _id: string;
+}
+
+export interface GetCategoriesDataResponse {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  isActive: boolean;
+}
+
+export interface GetCategoryFullResponse {
+  data: GetCategoriesDataResponse[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface deleteCategoryResponse {
+  message: string;
+  deleteCategory: {
+    _id: string;
+    name: string;
+    description: string;
+    image: string;
+    isActive: boolean;
+  };
+}
+
+export interface updateCategoryResponse {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface updateCategoryRequest {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
   image: File;
 }

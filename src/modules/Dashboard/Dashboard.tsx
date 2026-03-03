@@ -39,6 +39,11 @@ const cards = [
     description: "Total Contact Forms",
     more: true,
   },
+  {
+    title: "Categories",
+    description: "Total Categories",
+    more: false,
+  },
 ];
 
 const Dashboard = () => {
@@ -58,7 +63,9 @@ const Dashboard = () => {
     totalUsers,
     totalOrders,
     totalContactForms,
+    totalCategoris,
     lastContactAdded,
+    lastCategoriesAdded,
     lastOrderAdded,
     lastPostAdded,
     lastProductAdded,
@@ -84,11 +91,15 @@ const Dashboard = () => {
       setOpenViewForPosts(true);
     }
     if (name === "Orders") {
-      router.push("/orders");
+      router.push(routes.orders);
       localStorage.setItem("activeState", "orders");
     }
     if (name === "Contact forms") {
       setOpenViewForContactForms(true);
+    }
+    if (name === "Categories") {
+      router.push(routes.category);
+      localStorage.setItem("activeState", "category");
     }
   };
 
@@ -161,7 +172,11 @@ const Dashboard = () => {
                   onClick={() => handleView(card.title)}
                   className="px-4 py-2 cursor-pointer rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
                 >
-                  {card.title === "Orders" ? "Go to Orders" : "View"}
+                  {card.title === "Orders"
+                    ? "Go to Orders"
+                    : card.title === "Categories"
+                      ? "Go to Categories"
+                      : "View"}
                 </button>
               </div>
 
@@ -176,7 +191,9 @@ const Dashboard = () => {
                         ? totalPosts
                         : card.title === "Orders"
                           ? totalOrders
-                          : totalContactForms}
+                          : card.title === "Contact forms"
+                            ? totalContactForms
+                            : totalCategoris}
                 </p>
               </div>
 
@@ -205,7 +222,9 @@ const Dashboard = () => {
                       ? lastPostAdded
                       : card.title === "Orders"
                         ? lastOrderAdded
-                        : lastContactAdded}
+                        : card.title === "Contact forms"
+                          ? lastContactAdded
+                          : lastCategoriesAdded}
               </div>
             </Card>
           ))}

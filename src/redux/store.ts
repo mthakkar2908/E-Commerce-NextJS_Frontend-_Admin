@@ -6,6 +6,7 @@ import productReducer from "./slices/productSlice";
 import postReducer from "./slices/postSlice";
 import orderReducer from "./slices/orderSlice";
 import contactReducer from "./slices/contactSlice";
+import categoryReducer from "./slices/categorySlice";
 import {
   persistStore,
   persistReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   post: postReducer,
   orders: orderReducer,
   contacts: contactReducer,
+  category: categoryReducer,
 });
 
 const persistConfig = {
