@@ -16,9 +16,9 @@ const initialState = {
 
 export const getAllOrders = createAsyncThunk(
   "orders/getAllOrders",
-  async (_, { rejectWithValue }) => {
+  async (params: { page: number; pageSize: number }, { rejectWithValue }) => {
     try {
-      const res = await authApi.getOrders();
+      const res = await authApi.getOrders(params.page, params.pageSize);
       return res;
     } catch (error: any) {
       return rejectWithValue(
@@ -42,9 +42,16 @@ export const CreateOrder = createAsyncThunk(
 
 export const getAllOrdersBySearch = createAsyncThunk(
   "orders/getAllOrdersBySearch",
-  async (o: string, { rejectWithValue }) => {
+  async (
+    params: { o: string; page: number; pageSize: number },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await authApi.searchOrders(o);
+      const res = await authApi.searchOrders(
+        params.o,
+        params.page,
+        params.pageSize,
+      );
       return res;
     } catch (error: any) {
       return rejectWithValue(

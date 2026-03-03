@@ -176,6 +176,13 @@ export interface getOrdersResponse {
   product_quan: number;
 }
 
+export interface getAllOrdersResponse {
+  data: getOrdersResponse[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface ContactFormResponse {
   _id: string;
   name: string;

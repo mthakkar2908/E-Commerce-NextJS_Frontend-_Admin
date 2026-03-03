@@ -20,6 +20,7 @@ import {
   GetAllProductsResponse,
   GetSubscribersList,
   getOrdersResponse,
+  getAllOrdersResponse,
   getPrivacyText,
   getTermsText,
   getUsersResponse,
@@ -151,11 +152,22 @@ export const authApi = {
       `/terms-conditions/delete-terms/${id}`,
     );
   },
-  getOrders: async (): Promise<getOrdersResponse[]> => {
-    return apiClient.get<getOrdersResponse[]>("/orders");
+  getOrders: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<getAllOrdersResponse> => {
+    return apiClient.get<getAllOrdersResponse>(
+      `/orders?page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
-  searchOrders: async (o: string): Promise<getOrdersResponse[]> => {
-    return apiClient.get<getOrdersResponse[]>(`/orders/searchOrders?o=${o}`);
+  searchOrders: async (
+    o: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<getAllOrdersResponse> => {
+    return apiClient.get<getAllOrdersResponse>(
+      `/orders/searchOrders?o=${o}&page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
   deleteOrder: async (id: string) => {
     return apiClient.delete(`/orders/deleteOrder/${id}`);

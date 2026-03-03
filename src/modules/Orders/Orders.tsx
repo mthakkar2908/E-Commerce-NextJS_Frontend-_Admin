@@ -19,6 +19,9 @@ const Orders = () => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme.mode);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [total, setTotal] = useState<number>(0);
 
   const debounce = useDebounce(searchTerm, 500);
 
@@ -27,8 +30,13 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         setOrderLoading(true);
-        const response = await dispatch(getAllOrders()).unwrap();
-        setOrders(response);
+        const response = await dispatch(
+          getAllOrders({ page, pageSize }),
+        ).unwrap();
+        setOrders(response?.data);
+        setTotal(response.total ?? 0);
+        setPage(response.page ?? page);
+        setPageSize(response.pageSize ?? pageSize);
       } catch (error) {
         toast.error((error as any) ?? "Failed to fetch Orders");
       } finally {
@@ -37,22 +45,25 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, [dispatch]);
+  }, [dispatch, page, pageSize]);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await dispatch(
-          getAllOrdersBySearch(debounce),
+          getAllOrdersBySearch({ o: debounce, page, pageSize }),
         ).unwrap();
-        setOrders(response);
+        setOrders(response?.data);
+        setTotal(response.total ?? 0);
+        setPage(response.page ?? page);
+        setPageSize(response.pageSize ?? pageSize);
       } catch (error) {
         toast.error((error as any) ?? "Failed to fetch Orders");
       }
     };
 
     fetchOrders();
-  }, [dispatch, debounce]);
+  }, [dispatch, debounce, page, pageSize]);
 
   const handleDeleteClick = (id: string) => {
     toast.dismiss();
@@ -130,84 +141,143 @@ const Orders = () => {
           />
         </div>
         <div className="overflow-x-auto scrollbar rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
+          <div className="p-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-black dark:text-white">
+                Rows:
+              </label>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="h-8 px-2 rounded border text-black dark:text-white bg-gray-200 dark:bg-black focus:border-black dark:focus:border-white "
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
+
+            <div className="text-sm text-slate-400">
+              {total > 0 && (
+                <span>
+                  Showing {Math.min(total, (page - 1) * pageSize + 1)} -{" "}
+                  {Math.min(total, page * pageSize)} of {total}
+                </span>
+              )}
+            </div>
+          </div>
           {orders.length > 0 ? (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-linear-to-r dark:from-cyan-500/20 dark:to-indigo-500/20 bg-gray-400 dark:text-cyan-300 text-black uppercase text-xs tracking-wider">
-                  <th className="px-6 py-4 text-left">Order ID</th>
-                  <th className="px-6 py-4 text-left">Customer</th>
-                  <th className="px-6 py-4 text-left">Email</th>
-                  <th className="px-6 py-4 text-left">Mobile</th>
-                  <th className="px-6 py-4 text-left">Product</th>
-                  <th className="px-6 py-4 text-left">Price</th>
-                  <th className="px-6 py-4 text-left">Quantity</th>
-                  <th className="px-6 py-4 text-left">Total</th>
-                  <th className="px-6 py-4 text-left">Status</th>
-                  <th className="px-6 py-4 text-left">Address</th>
-                  <th className="px-6 py-4 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr
-                    key={order._id}
-                    className="border-t border-white/5 hover:bg-cyan-500/10 transition-all duration-200"
-                  >
-                    <td className="px-6 py-4 dark:text-slate-300 text-slate-600 font-medium">
-                      {order._id}
-                    </td>
-
-                    <td className="px-6 py-4 dark:text-cyan-200 text-slate-600 font-medium">
-                      {order.user_first_name} {order.user_last_name}
-                    </td>
-                    <td className="px-6 py-4 dark:text-emerald-400 text-slate-600 font-medium">
-                      {order.email}
-                    </td>
-                    <td className="px-6 py-4 dark:text-blue-400 text-slate-600 font-medium">
-                      {order.mobile_no}
-                    </td>
-                    <td className="px-6 py-4 dark:text-fuchsia-400 text-slate-600 font-medium">
-                      {order.product_id?.name}
-                    </td>
-                    <td className="px-6 py-4 dark:text-green-300 text-slate-600 font-medium">
-                      ${order.product_id?.price}
-                    </td>
-                    <td className="px-6 py-4 dark:text-violet-400 text-slate-600 font-medium">
-                      {order.product_quan}
-                    </td>
-                    <td className="px-6 py-4 dark:text-zinc-500 text-slate-600 font-medium">
-                      ${order.total_price}
-                    </td>
-
-                    <td className="border p-2">
-                      <span
-                        className={`px-6 py-2 rounded text-white text-sm ${
-                          order.status === "Delivered"
-                            ? "bg-green-500"
-                            : order.status === "Pending"
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-
-                    <td className="px-6 py-4 dark:text-amber-200 text-slate-600 font-medium">
-                      {order.address}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleDeleteClick(order._id)}
-                        className="p-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-                      >
-                        <Trash2 size={18} />
-                      </button>{" "}
-                    </td>
+            <>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-linear-to-r dark:from-cyan-500/20 dark:to-indigo-500/20 bg-gray-400 dark:text-cyan-300 text-black uppercase text-xs tracking-wider">
+                    <th className="px-6 py-4 text-left">Order ID</th>
+                    <th className="px-6 py-4 text-left">Customer</th>
+                    <th className="px-6 py-4 text-left">Email</th>
+                    <th className="px-6 py-4 text-left">Mobile</th>
+                    <th className="px-6 py-4 text-left">Product</th>
+                    <th className="px-6 py-4 text-left">Price</th>
+                    <th className="px-6 py-4 text-left">Quantity</th>
+                    <th className="px-6 py-4 text-left">Total</th>
+                    <th className="px-6 py-4 text-left">Status</th>
+                    <th className="px-6 py-4 text-left">Address</th>
+                    <th className="px-6 py-4 text-left">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr
+                      key={order._id}
+                      className="border-t border-white/5 hover:bg-cyan-500/10 transition-all duration-200"
+                    >
+                      <td className="px-6 py-4 dark:text-slate-300 text-slate-600 font-medium">
+                        {order._id}
+                      </td>
+
+                      <td className="px-6 py-4 dark:text-cyan-200 text-slate-600 font-medium">
+                        {order.user_first_name} {order.user_last_name}
+                      </td>
+                      <td className="px-6 py-4 dark:text-emerald-400 text-slate-600 font-medium">
+                        {order.email}
+                      </td>
+                      <td className="px-6 py-4 dark:text-blue-400 text-slate-600 font-medium">
+                        {order.mobile_no}
+                      </td>
+                      <td className="px-6 py-4 dark:text-fuchsia-400 text-slate-600 font-medium">
+                        {order.product_id?.name}
+                      </td>
+                      <td className="px-6 py-4 dark:text-green-300 text-slate-600 font-medium">
+                        ${order.product_id?.price}
+                      </td>
+                      <td className="px-6 py-4 dark:text-violet-400 text-slate-600 font-medium">
+                        {order.product_quan}
+                      </td>
+                      <td className="px-6 py-4 dark:text-zinc-500 text-slate-600 font-medium">
+                        ${order.total_price}
+                      </td>
+
+                      <td className="border p-2">
+                        <span
+                          className={`px-6 py-2 rounded text-white text-sm ${
+                            order.status === "Delivered"
+                              ? "bg-green-500"
+                              : order.status === "Pending"
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 dark:text-amber-200 text-slate-600 font-medium">
+                        {order.address}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => handleDeleteClick(order._id)}
+                          className="p-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                        >
+                          <Trash2 size={18} />
+                        </button>{" "}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex items-center justify-between p-3">
+                <div className="text-sm text-slate-400">
+                  Page {page} of {Math.max(1, Math.ceil(total / pageSize))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    onClick={() =>
+                      setPage((p) =>
+                        Math.min(
+                          Math.max(1, Math.ceil(total / pageSize)),
+                          p + 1,
+                        ),
+                      )
+                    }
+                    disabled={page >= Math.max(1, Math.ceil(total / pageSize))}
+                    className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </>
           ) : orderLoading ? (
             <p className="flex justify-center items-center mt-3 mb-3">
               Loading...
