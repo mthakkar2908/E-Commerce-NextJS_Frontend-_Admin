@@ -42,7 +42,6 @@ export default function RootLayout({
                 padding: "14px 18px",
                 fontSize: "14px",
                 fontWeight: "500",
-                // backdropFilter: "blur(10px)",
               },
               success: {
                 style: {

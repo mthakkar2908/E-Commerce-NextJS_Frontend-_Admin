@@ -12,9 +12,12 @@ const initialState = {
 
 export const getAllContacts = createAsyncThunk(
   "contacts/getAllContacts",
-  async (_, { rejectWithValue }) => {
+  async (
+    params: { page?: number; pageSize?: number } = { page: 1, pageSize: 10 },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await authApi.contactForm();
+      const res = await authApi.contactForm(params.page, params.pageSize);
       return res;
     } catch (error: any) {
       return rejectWithValue(
@@ -40,9 +43,16 @@ export const deleteConact = createAsyncThunk(
 
 export const searchContacts = createAsyncThunk(
   "contacts/searchContact",
-  async (q: string, { rejectWithValue }) => {
+  async (
+    params: { q: string; page?: number; pageSize?: number },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await authApi.searchContacts(q);
+      const response = await authApi.searchContacts(
+        params.q,
+        params.page,
+        params.pageSize,
+      );
       return response;
     } catch (error: any) {
       return rejectWithValue(error?.message ?? "Faild to search contact");

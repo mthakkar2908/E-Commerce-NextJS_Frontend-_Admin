@@ -18,15 +18,6 @@ const LoginPage = () => {
   const { loading, error, isAuthenticated, user } = useAppSelector(
     (state) => state.auth,
   );
-
-  // const redirectDashboard = async () => {
-  //   if (isAuthenticated && user) {
-  //     setRedirectLogin(true);
-  //     console.log("Authenticated", isAuthenticated);
-  //     await router.push("/dashboard");
-  //     setRedirectLogin(false);
-  //   }
-  // };
   useEffect(() => {
     if (isAuthenticated && user) {
       console.log(user);

@@ -30,9 +30,12 @@ export const getAllPosts = createAsyncThunk(
 
 export const getSubscriberData = createAsyncThunk(
   "subscribe/getSubscriberData",
-  async (_, { rejectWithValue }) => {
+  async (
+    params: { page?: number; pageSize?: number } = { page: 1, pageSize: 10 },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await authApi.getSubscriberData();
+      const res = await authApi.getSubscriberData(params.page, params.pageSize);
       return res;
     } catch (error: any) {
       return rejectWithValue(

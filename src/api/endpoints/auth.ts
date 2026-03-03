@@ -7,7 +7,6 @@ import {
   AddToCartPayload,
   AddToCartResponse,
   ContactDeletedResponse,
-  ContactFormResponse,
   CreateOrderRequest,
   CreateOrderResponse,
   CreateProductRequest,
@@ -19,7 +18,7 @@ import {
   DeleteUserResponse,
   GetAllPostResponse,
   GetAllProductsResponse,
-  GetAllSubscriberData,
+  GetSubscribersList,
   getOrdersResponse,
   getPrivacyText,
   getTermsText,
@@ -32,7 +31,7 @@ import {
   PrivacyPolicyResponse,
   RegisterRequest,
   RegisterResponse,
-  SearchContactResponse,
+  ContactListResponse,
   SearchProductResponse,
   TermsConditionResponse,
   TotalCountResponse,
@@ -98,8 +97,13 @@ export const authApi = {
   deletePost: async (id: string): Promise<DeletePostsResponse> => {
     return apiClient.delete<DeletePostsResponse>(`/posts/deletePost/${id}`);
   },
-  getSubscriberData: async (): Promise<GetAllSubscriberData[]> => {
-    return apiClient.get<GetAllSubscriberData[]>(`/email-signup`);
+  getSubscriberData: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<GetSubscribersList> => {
+    return apiClient.get<GetSubscribersList>(
+      `/email-signup?page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
   unSubscribeChannel: async (
     data: UnsubscribeChannelRequest,
@@ -156,8 +160,13 @@ export const authApi = {
   deleteOrder: async (id: string) => {
     return apiClient.delete(`/orders/deleteOrder/${id}`);
   },
-  contactForm: async (): Promise<ContactFormResponse[]> => {
-    return apiClient.get<ContactFormResponse[]>("/contact/form");
+  contactForm: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<ContactListResponse> => {
+    return apiClient.get<ContactListResponse>(
+      `/contact/form?page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
   deleteContact: async (id: string): Promise<ContactDeletedResponse> => {
     return apiClient.delete<ContactDeletedResponse>(
@@ -185,8 +194,14 @@ export const authApi = {
     return apiClient.put<AddQuantityResponse>("/products/addQuan", data);
   },
 
-  searchContacts: async (q: string): Promise<SearchContactResponse[]> => {
-    return apiClient.get<SearchContactResponse[]>(`/contact/search?q=${q}`);
+  searchContacts: async (
+    q: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<ContactListResponse> => {
+    return apiClient.get<ContactListResponse>(
+      `/contact/search?q=${encodeURIComponent(q)}&page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
   createOrder: async (
     data: CreateOrderRequest,

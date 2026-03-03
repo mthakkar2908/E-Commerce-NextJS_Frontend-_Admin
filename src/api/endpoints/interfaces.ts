@@ -79,6 +79,13 @@ export interface GetAllSubscriberData {
   email: string;
 }
 
+export interface GetSubscribersList {
+  data: GetAllSubscriberData[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface UnSubscribeChannel {
   message: string;
   data: {
@@ -176,6 +183,13 @@ export interface ContactFormResponse {
   title: string;
   mobile_no: string;
   description: string;
+}
+
+export interface ContactListResponse {
+  data: ContactFormResponse[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface ContactDeletedResponse {

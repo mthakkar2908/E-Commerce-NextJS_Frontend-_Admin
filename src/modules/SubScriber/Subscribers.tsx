@@ -37,19 +37,27 @@ export function Subscribers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [inviteUsers, setInviteUsers] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     const fetchSubscribersData = async () => {
       try {
-        const res = await dispatch(getSubscriberData()).unwrap();
-        setSubData(res);
+        const res = await dispatch(
+          getSubscriberData({ page, pageSize }),
+        ).unwrap();
+        setSubData(res?.data);
+        setTotal(res.total ?? 0);
+        setPage(res.page ?? page);
+        setPageSize(res.pageSize ?? pageSize);
       } catch (error) {
         toast.error((error as string) ?? "Failed to fetch Subscriber data");
       }
     };
 
     fetchSubscribersData();
-  }, [dispatch]);
+  }, [dispatch, page, pageSize]);
 
   const filteredSubscribers = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
@@ -117,6 +125,35 @@ export function Subscribers() {
             isDark ? "border-gray-700" : "border-gray-300"
           }`}
         >
+          <div className="p-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-black dark:text-white">
+                Rows:
+              </label>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="h-8 px-2 rounded border text-black dark:text-white bg-gray-200 dark:bg-black focus:border-black dark:focus:border-white "
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
+
+            <div className="text-sm text-slate-400">
+              {total > 0 && (
+                <span>
+                  Showing {Math.min(total, (page - 1) * pageSize + 1)} -{" "}
+                  {Math.min(total, page * pageSize)} of {total}
+                </span>
+              )}
+            </div>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -159,6 +196,31 @@ export function Subscribers() {
               )}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-between p-3">
+            <div className="text-sm text-slate-400">
+              Page {page} of {Math.max(1, Math.ceil(total / pageSize))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <button
+                onClick={() =>
+                  setPage((p) =>
+                    Math.min(Math.max(1, Math.ceil(total / pageSize)), p + 1),
+                  )
+                }
+                disabled={page >= Math.max(1, Math.ceil(total / pageSize))}
+                className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       {inviteUsers && (

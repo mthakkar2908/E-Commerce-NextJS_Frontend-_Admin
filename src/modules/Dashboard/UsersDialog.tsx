@@ -23,7 +23,7 @@ const UsersDialog: React.FC<ViewProps> = ({
   const [userLoading, setUserLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const theme = useAppSelector((state) => state?.theme.mode);
+  const theme = useAppSelector((state) => state.theme.mode);
   const isDark = theme === "dark";
 
   const dispatch = useAppDispatch();

@@ -18,8 +18,10 @@ const ContactDialog = ({ open, setOpen }: ContactDialogProps) => {
   useEffect(() => {
     const fetchContactForms = async () => {
       try {
-        const res = await dispatch(getAllContacts()).unwrap();
-        setContactData(res);
+        const res = await dispatch(
+          getAllContacts({ page: 1, pageSize: 100 }),
+        ).unwrap();
+        setContactData(res.data);
       } catch (error) {
         toast.error((error as string) ?? "Failed to fetch Contact forms data");
       }
