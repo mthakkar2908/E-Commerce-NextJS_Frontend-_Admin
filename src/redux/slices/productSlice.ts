@@ -20,8 +20,20 @@ export const getAllProducts = createAsyncThunk(
       const res = await authApi.getProducts(data.page, data.pageSize);
       return res;
     } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Failed to fetch products");
+    }
+  },
+);
+
+export const getProductsByCatId = createAsyncThunk(
+  "products/getAllProducts",
+  async (cat_id: string, { rejectWithValue }) => {
+    try {
+      const res = await authApi.getProductsByCategoryId(cat_id);
+      return res;
+    } catch (error: any) {
       return rejectWithValue(
-        error.response?.message ?? "Failed to fetch products",
+        error?.message ?? "Failed to fetch Products By category id",
       );
     }
   },

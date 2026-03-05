@@ -17,6 +17,10 @@ export interface GetAllProductsResponse {
     about_product: string;
     price: number;
     quan: number;
+    category_id: {
+      _id: string;
+      name: string;
+    };
   };
   total: number;
   page: number;
@@ -29,6 +33,10 @@ export interface SearchProductResponse {
   about_product: string;
   price: number;
   quan: number;
+  category_id: {
+    _id: string;
+    name: string;
+  };
 }
 
 export interface DeleteProductResponse {
@@ -216,6 +224,7 @@ export interface CreateProductRequest {
   about_product: string;
   price: number;
   quan: number;
+  category_id: string;
 }
 
 export interface createProductResponse {
@@ -377,6 +386,7 @@ export interface UpdateProductRequest {
   about_product: string;
   price: number;
   quan: number;
+  category_id: string;
 }
 
 export interface UpdateProductResponse {
@@ -487,4 +497,16 @@ export interface updateCategoryRequest {
   description: string;
   isActive: boolean;
   image: File;
+}
+
+export interface getProducutsByCategoryId {
+  _id: string;
+  name: string;
+  about_product: string;
+  price: number;
+  quan: number;
+  category_id: {
+    _id: string;
+    name: string;
+  };
 }

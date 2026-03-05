@@ -6,6 +6,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   CreateProductRequest,
+  updateCategoryResponse,
   UpdateProductRequest,
 } from "@/src/api/endpoints/interfaces";
 import { useAppDispatch } from "@/src/redux/hooks";
@@ -13,13 +14,15 @@ import { CreateProduct, UpdateProducts } from "@/src/redux/slices/productSlice";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Product } from "./Products";
+import { getAllCategory } from "@/src/redux/slices/categorySlice";
 
 interface ProductDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   fetchProducts: () => void;
-  selectedProductForEdit: Product | null;
+  selectedProductForEdit?: Product | null;
   mode: string;
+  from?: string;
 }
 
 const ProductDialog = ({
@@ -28,11 +31,14 @@ const ProductDialog = ({
   fetchProducts,
   mode,
   selectedProductForEdit,
+  from,
 }: ProductDialogProps) => {
   const [name, setName] = useState("");
   const [about, setabout] = useState("");
   const [price, setPrice] = useState("");
   const [quan, setQuan] = useState("");
+  const [category, setCategory] = useState<updateCategoryResponse[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -41,6 +47,7 @@ const ProductDialog = ({
     setabout(selectedProductForEdit?.about_product?.toString() || "");
     setPrice(selectedProductForEdit?.price?.toString() || "");
     setQuan(selectedProductForEdit?.quan?.toString() || "");
+    setSelectedCategory(selectedProductForEdit?.category_id?._id || "");
   };
 
   useEffect(() => {
@@ -49,6 +56,20 @@ const ProductDialog = ({
     }
   }, [mode, selectedProductForEdit]);
 
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      try {
+        const response = await dispatch(getAllCategory()).unwrap();
+        setCategory(response);
+        console.log(response);
+      } catch (error) {
+        toast.error((error as any) ?? "Failed to Get Categories data");
+      }
+    };
+
+    fetchAllCategories();
+  }, []);
+
   const createProduct = async () => {
     try {
       const payload: CreateProductRequest = {
@@ -56,6 +77,7 @@ const ProductDialog = ({
         about_product: about,
         price: Number(price),
         quan: Number(quan),
+        category_id: from ? from : selectedCategory,
       };
       const createResponse = await dispatch(CreateProduct(payload)).unwrap();
 
@@ -84,6 +106,7 @@ const ProductDialog = ({
         about_product: about,
         price: Number(price),
         quan: Number(quan),
+        category_id: from ? from : selectedCategory,
       };
 
       const editResponse = await dispatch(UpdateProducts(EditPayload)).unwrap();
@@ -100,7 +123,7 @@ const ProductDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-full max-w-lg rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl p-6">
+      <DialogContent className="w-full max-w-lg max-h-125 h-auto overflow-auto scrollbar rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl p-6">
         <DialogTitle className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
           {mode === "edit" ? "Edit Product" : "Create Product"}
         </DialogTitle>
@@ -204,6 +227,36 @@ const ProductDialog = ({
                    transition"
             />
           </div>
+          {!from && (
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="category"
+                className="text-sm font-medium text-gray-600 dark:text-gray-400"
+              >
+                Category
+              </label>
+
+              <select
+                id="category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="h-11 rounded-xl border border-gray-300 dark:border-gray-700
+    bg-gray-50 dark:bg-gray-800
+    px-3 text-gray-800 dark:text-gray-100
+    focus:outline-none focus:ring-2
+    focus:ring-blue-500 dark:focus:ring-blue-400
+    transition"
+              >
+                <option value="">Select Category</option>
+
+                {category?.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-800 mt-6">
           <button

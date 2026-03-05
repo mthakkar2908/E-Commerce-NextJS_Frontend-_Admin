@@ -17,6 +17,7 @@ import {
   ShoppingBag,
   Users,
   PenLine,
+  LayoutGrid,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -208,7 +209,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
             }`}
           >
             {collapsed ? (
-              <ShoppingBag size={22} />
+              <LayoutGrid size={22} />
             ) : (
               <span className="truncate">Category</span>
             )}

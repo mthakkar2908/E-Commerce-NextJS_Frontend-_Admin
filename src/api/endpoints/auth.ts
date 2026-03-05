@@ -49,6 +49,7 @@ import {
   deleteCategoryResponse,
   updateCategoryRequest,
   updateCategoryResponse,
+  getProducutsByCategoryId,
 } from "./interfaces";
 
 export const authApi = {
@@ -274,6 +275,18 @@ export const authApi = {
     return apiClient.post<updateCategoryResponse>(
       `/category/updateCategory`,
       data,
+    );
+  },
+  getAllCategories: async (): Promise<updateCategoryResponse[]> => {
+    return apiClient.get<updateCategoryResponse[]>(
+      `/category/getAllCategories`,
+    );
+  },
+  getProductsByCategoryId: async (
+    cat_id: string,
+  ): Promise<getProducutsByCategoryId[]> => {
+    return apiClient.get<getProducutsByCategoryId[]>(
+      `/products/category/${cat_id}`,
     );
   },
 };

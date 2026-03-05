@@ -29,6 +29,20 @@ export const GetCategories = createAsyncThunk(
   },
 );
 
+export const getAllCategory = createAsyncThunk(
+  "category/getAllCategory",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authApi.getAllCategories();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.message || "Failed to fetch categories data",
+      );
+    }
+  },
+);
+
 export const addCategory = createAsyncThunk(
   "category/addCategory",
   async (formData: AddCategoryRequest, { rejectWithValue }) => {

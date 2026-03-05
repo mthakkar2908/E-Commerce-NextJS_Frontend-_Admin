@@ -13,6 +13,7 @@ import {
 } from "@/src/redux/slices/categorySlice";
 import toast from "react-hot-toast";
 import { GetCategoriesDataResponse } from "@/src/api/endpoints/interfaces";
+import { useRouter } from "next/navigation";
 
 export type Category = {
   _id: string;
@@ -33,6 +34,8 @@ const Categories = () => {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
   const [total, setTotal] = useState<number>(0);
+
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const fetchData = async () => {
@@ -185,6 +188,7 @@ const Categories = () => {
               {categories.map((cat) => (
                 <div
                   key={cat._id}
+                  onClick={() => router.push(`/category/${cat._id}`)}
                   className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
                 >
                   <img
@@ -197,14 +201,20 @@ const Categories = () => {
 
                   <div className="absolute top-4 right-4 flex gap-3 opacity-0 group-hover:opacity-100 translate-x-6 group-hover:translate-x-0 transition-all duration-500 z-20">
                     <button
-                      onClick={() => handleEditPostClick(cat)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditPostClick(cat);
+                      }}
                       className="p-2 rounded-full bg-white/20 backdrop-blur-md hover:bg-blue-500 transition-all duration-300"
                     >
                       <Pencil size={16} className="text-white" />
                     </button>
 
                     <button
-                      onClick={() => handleDeleteClick(cat._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(cat._id);
+                      }}
                       className="p-2 rounded-full bg-white/20 backdrop-blur-md hover:bg-red-500 transition-all duration-300"
                     >
                       <Trash2 size={16} className="text-white" />

@@ -32,6 +32,10 @@ export type Product = {
   about_product: string;
   price: number;
   quan: number;
+  category_id: {
+    _id: string;
+    name: string;
+  };
 };
 const Products = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +48,10 @@ const Products = () => {
       about_product: string;
       price: number;
       quan: number;
+      category_id: {
+        _id: string;
+        name: string;
+      };
     }[]
   >();
 
@@ -256,6 +264,7 @@ const Products = () => {
                 <th className="px-6 py-4 text-left">About</th>
                 <th className="px-6 py-4 text-left">Price</th>
                 <th className="px-6 py-4 text-left">Quantity</th>
+                <th className="px-6 py-4 text-left">Category</th>
                 <th className="px-6 py-4 text-center">Actions</th>
                 <th className="px-6 py-4 text-center">Cart</th>
                 <th className="px-6 py-4 text-center">Orders</th>
@@ -278,6 +287,10 @@ const Products = () => {
 
                   <td className="px-6 py-4 text-emerald-400 font-semibold">
                     ₹ {product.price}
+                  </td>
+
+                  <td className="px-6 py-4 text-indigo-400 font-semibold">
+                    {product.category_id?.name ?? "N/A"}
                   </td>
 
                   <td className="px-6 py-4 relative">
