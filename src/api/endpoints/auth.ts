@@ -50,6 +50,10 @@ import {
   updateCategoryRequest,
   updateCategoryResponse,
   getProducutsByCategoryId,
+  AddUserRequest,
+  AddUserResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
 } from "./interfaces";
 
 export const authApi = {
@@ -287,6 +291,18 @@ export const authApi = {
   ): Promise<getProducutsByCategoryId[]> => {
     return apiClient.get<getProducutsByCategoryId[]>(
       `/products/category/${cat_id}`,
+    );
+  },
+  AddUser: async (data: AddUserRequest): Promise<AddUserResponse> => {
+    return apiClient.post<AddUserResponse>(`/users`, data);
+  },
+  UpdateUser: async (
+    data: UpdateUserRequest,
+    id: string,
+  ): Promise<UpdateUserResponse> => {
+    return apiClient.post<UpdateUserResponse>(
+      `/users/updateProfile/${id}`,
+      data,
     );
   },
 };

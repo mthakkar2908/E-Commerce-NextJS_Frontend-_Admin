@@ -510,3 +510,33 @@ export interface getProducutsByCategoryId {
     name: string;
   };
 }
+
+export interface AddUserRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AddUserResponse {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  message?: string[];
+  statusCode?: number;
+}
+
+export interface UpdateUserRequest {
+  name: string;
+  email: string;
+  image: string;
+}
+
+export interface UpdateUserResponse {
+  message: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}

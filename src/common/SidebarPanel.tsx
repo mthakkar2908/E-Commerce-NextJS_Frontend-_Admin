@@ -18,6 +18,7 @@ import {
   Users,
   PenLine,
   LayoutGrid,
+  Contact,
 } from "lucide-react";
 import routes from "./routes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -77,6 +78,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
 
     if (pathname.includes("/orders")) setActive("orders");
     else if (pathname.includes("/products")) setActive("products");
+    else if (pathname.includes("/users")) setActive("user");
     else if (pathname.includes("/subscribe")) setActive("subscribe");
     else if (pathname.includes("/category")) setActive("category");
     else if (
@@ -165,6 +167,23 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
           </Link>
 
           <Link
+            href={routes.users}
+            title={collapsed ? "Users" : ""}
+            onClick={() => setActive("user")}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition truncate ${active === "user" ? (isDark ? "bg-gray-700 text-blue-400" : "bg-blue-100 text-blue-700") : ""}  ${
+              isDark
+                ? "hover:bg-gray-700 hover:text-blue-400"
+                : "hover:bg-blue-100 hover:text-blue-600"
+            }`}
+          >
+            {collapsed ? (
+              <Users size={22} />
+            ) : (
+              <span className="truncate">Users</span>
+            )}
+          </Link>
+
+          <Link
             href={routes.subscribe}
             title={collapsed ? "Subscribe List" : ""}
             onClick={() => setActive("subscribe")}
@@ -243,7 +262,7 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
             }`}
           >
             {collapsed ? (
-              <Users size={22} />
+              <Contact size={22} />
             ) : (
               <span className="truncate">Contacts</span>
             )}

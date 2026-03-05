@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { authApi } from "@/src/api/endpoints";
-import { LoginRequest } from "@/src/api/endpoints/interfaces";
+import {
+  AddUserRequest,
+  LoginRequest,
+  UpdateUserRequest,
+} from "@/src/api/endpoints/interfaces";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface User {
@@ -56,6 +61,33 @@ export const logoutThunk = createAsyncThunk(
         return rejectWithValue(error.message);
       }
       return rejectWithValue("An error occurred during logout");
+    }
+  },
+);
+
+export const AddUser = createAsyncThunk(
+  "auth/AddUser",
+  async (data: AddUserRequest, { rejectWithValue }) => {
+    try {
+      const res = await authApi.AddUser(data);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error?.message ?? "Failed to Create User");
+    }
+  },
+);
+
+export const UpdateUser = createAsyncThunk(
+  "auth/UpdateUser",
+  async (
+    params: { data: UpdateUserRequest; id: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const res = await authApi.UpdateUser(params.data, params.id);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || "Failed to Update User");
     }
   },
 );

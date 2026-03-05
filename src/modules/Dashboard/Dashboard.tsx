@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -17,7 +18,7 @@ const cards = [
   {
     title: "Users",
     description: "Total registered users",
-    more: false,
+    more: true,
   },
   {
     title: "Products",
@@ -113,12 +114,15 @@ const Dashboard = () => {
       } else if (title === "Contact forms") {
         localStorage.setItem("activeState", "contacts");
         await router.push(routes.contacts);
+      } else if (title === "Users") {
+        localStorage.setItem("activeState", "user");
+        await router.push(routes.users);
       } else {
         localStorage.setItem("activeState", "posts");
         await router.push(routes.posts);
       }
     } catch (error) {
-      toast.error("Failed to navigate");
+      toast.error((error as any) ?? "Failed to navigate");
     } finally {
       setLoadingFor(null);
     }

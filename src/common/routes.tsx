@@ -1,5 +1,6 @@
 const routes = {
   login: "/",
+  users: "/users",
   dashboard: "/dashboard",
   subscribe: "/subscribes",
   privacy: "/privacy-policy",
