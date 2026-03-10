@@ -65,6 +65,13 @@ export interface GetAllPostResponse {
   };
 }
 
+export interface GetPostResponse {
+  data: GetAllPostResponse[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface DeletePostsResponse {
   message: string;
   data: {

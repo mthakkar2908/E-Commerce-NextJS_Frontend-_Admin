@@ -20,8 +20,10 @@ const PostsDialog: React.FC<ViewPostsProps> = ({ open, setOpen }) => {
   useEffect(() => {
     const fetchPostsData = async () => {
       try {
-        const res = await dispatch(getAllPosts()).unwrap();
-        setPosts(res);
+        const res = await dispatch(
+          getAllPosts({ page: 1, pageSize: 10 }),
+        ).unwrap();
+        setPosts(res.data);
       } catch (error) {
         toast.error((error as any) ?? "failed to fetch Post Data");
       }

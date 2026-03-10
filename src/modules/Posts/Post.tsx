@@ -32,12 +32,18 @@ const Posts = () => {
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const isDark = theme === "dark";
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [total, setTotal] = useState<number>(0);
 
   const fetchOrders = async () => {
     try {
       setPostLoading(true);
-      const response = await dispatch(getAllPosts()).unwrap();
-      setPosts(response);
+      const response = await dispatch(getAllPosts({ page, pageSize })).unwrap();
+      setPosts(response.data);
+      setTotal(response.total ?? 0);
+      setPage(response.page ?? page);
+      setPageSize(response.pageSize ?? pageSize);
     } catch (error) {
       toast.error((error as any) ?? "Failed to fetch Posts");
     } finally {
@@ -46,7 +52,7 @@ const Posts = () => {
   };
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [page, pageSize]);
 
   const handleDeleteClick = (id: string) => {
     toast.dismiss();
@@ -128,85 +134,145 @@ const Posts = () => {
           </button>
         </div>
         <div className="overflow-x-auto scrollbar rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl overflow-hidden">
-          {posts.length > 0 ? (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-linear-to-r dark:from-cyan-500/20 dark:to-indigo-500/20 bg-gray-400 dark:text-cyan-300 text-black uppercase text-xs tracking-wider">
-                  <th className="px-6 py-4 text-left">Post Image</th>
-                  <th className="px-6 py-4 text-left">Post Name</th>
-                  <th className="px-6 py-4 text-left">Post Description</th>
-                  <th className="px-6 py-4 text-left">Post Email</th>
-                  <th className="px-6 py-4 text-left">User/Admin Name</th>
-                  <th className="px-6 py-4 text-left">User/Admin Email</th>
-                  <th className="px-6 py-4 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map((post) => (
-                  <tr
-                    key={post._id}
-                    className="border-t border-white/5 hover:bg-cyan-500/10 transition-all duration-200"
-                  >
-                    <td className="px-6 py-4 dark:text-cyan-200 text-slate-600 font-medium">
-                      {post.imageUrl ? (
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL}${post.imageUrl}`}
-                          alt="post_image"
-                          className="h-15 w-15 rounded-full object-cover"
-                        />
-                      ) : (
-                        "No image"
-                      )}
-                    </td>
-                    <td className="px-6 py-4 dark:text-emerald-400 text-slate-600 font-medium">
-                      {post.name}
-                    </td>
-                    <td className="px-6 py-4 dark:text-blue-400 text-slate-600 font-medium">
-                      {post.post_description}
-                    </td>
-                    <td className="px-6 py-4 dark:text-fuchsia-400 text-slate-600 font-medium">
-                      {post.email}
-                    </td>
-                    <td className="px-6 py-4 dark:text-green-300 text-slate-600 font-medium">
-                      {post?.user?.name}
-                    </td>
-                    <td className="px-6 py-4 dark:text-violet-400 text-slate-600 font-medium">
-                      {post?.user?.email}
-                    </td>
+          <div className="p-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-black dark:text-white">
+                Rows:
+              </label>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="h-8 px-2 rounded border text-black dark:text-white bg-gray-200 dark:bg-black focus:border-black dark:focus:border-white "
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
 
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          onClick={() => handleEditPostClick(post)}
-                          className="p-2 rounded-xl bg-blue-500/20 text-blue-400 
+            <div className="text-sm text-slate-400">
+              {total > 0 && (
+                <span>
+                  Showing {Math.min(total, (page - 1) * pageSize + 1)} -{" "}
+                  {Math.min(total, page * pageSize)} of {total}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {posts.length > 0 ? (
+            <>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-linear-to-r dark:from-cyan-500/20 dark:to-indigo-500/20 bg-gray-400 dark:text-cyan-300 text-black uppercase text-xs tracking-wider">
+                    <th className="px-6 py-4 text-left">Post Image</th>
+                    <th className="px-6 py-4 text-left">Post Name</th>
+                    <th className="px-6 py-4 text-left">Post Description</th>
+                    <th className="px-6 py-4 text-left">Post Email</th>
+                    <th className="px-6 py-4 text-left">User/Admin Name</th>
+                    <th className="px-6 py-4 text-left">User/Admin Email</th>
+                    <th className="px-6 py-4 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {posts.map((post) => (
+                    <tr
+                      key={post._id}
+                      className="border-t border-white/5 hover:bg-cyan-500/10 transition-all duration-200"
+                    >
+                      <td className="px-6 py-4 dark:text-cyan-200 text-slate-600 font-medium">
+                        {post.imageUrl ? (
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_URL}${post.imageUrl}`}
+                            alt="post_image"
+                            className="h-15 w-15 rounded-full object-cover"
+                          />
+                        ) : (
+                          "No image"
+                        )}
+                      </td>
+                      <td className="px-6 py-4 dark:text-emerald-400 text-slate-600 font-medium">
+                        {post.name}
+                      </td>
+                      <td className="px-6 py-4 dark:text-blue-400 text-slate-600 font-medium">
+                        {post.post_description}
+                      </td>
+                      <td className="px-6 py-4 dark:text-fuchsia-400 text-slate-600 font-medium">
+                        {post.email}
+                      </td>
+                      <td className="px-6 py-4 dark:text-green-300 text-slate-600 font-medium">
+                        {post?.user?.name}
+                      </td>
+                      <td className="px-6 py-4 dark:text-violet-400 text-slate-600 font-medium">
+                        {post?.user?.email}
+                      </td>
+
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            onClick={() => handleEditPostClick(post)}
+                            className="p-2 rounded-xl bg-blue-500/20 text-blue-400 
       hover:bg-blue-500 hover:text-white 
       transition-all duration-200 
       hover:scale-110 active:scale-95 cursor-pointer"
-                        >
-                          <Pencil size={18} />
-                        </button>
+                          >
+                            <Pencil size={18} />
+                          </button>
 
-                        <button
-                          onClick={() => handleDeleteClick(post._id)}
-                          className="p-2 rounded-xl bg-red-500/20 text-red-400 
+                          <button
+                            onClick={() => handleDeleteClick(post._id)}
+                            className="p-2 rounded-xl bg-red-500/20 text-red-400 
       hover:bg-red-500 hover:text-white 
       transition-all duration-200 
       hover:scale-110 active:scale-95 cursor-pointer"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex items-center justify-between p-3">
+                <div className="text-sm text-slate-400">
+                  Page {page} of {Math.max(1, Math.ceil(total / pageSize))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    onClick={() =>
+                      setPage((p) =>
+                        Math.min(
+                          Math.max(1, Math.ceil(total / pageSize)),
+                          p + 1,
+                        ),
+                      )
+                    }
+                    disabled={page >= Math.max(1, Math.ceil(total / pageSize))}
+                    className="px-3 py-1 bg-gray-900 dark:bg-gray-200 text-white dark:text-black rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </>
           ) : postLoading ? (
             <p className="flex justify-center items-center mt-3 mb-3">
               Loading...
             </p>
           ) : (
-            <p className="text-center py-4">No Orders Found.</p>
+            <p className="text-center py-4">No Posts Found.</p>
           )}
         </div>
       </div>

@@ -54,6 +54,7 @@ import {
   AddUserResponse,
   UpdateUserRequest,
   UpdateUserResponse,
+  GetPostResponse,
 } from "./interfaces";
 
 export const authApi = {
@@ -102,8 +103,13 @@ export const authApi = {
   deleteProducts: async (id: string): Promise<DeleteProductResponse> => {
     return apiClient.delete<DeleteProductResponse>(`/products/${id}`);
   },
-  getPosts: async (): Promise<GetAllPostResponse[]> => {
-    return apiClient.get<GetAllPostResponse[]>("/posts");
+  getPosts: async (
+    page?: number,
+    pageSize?: number,
+  ): Promise<GetPostResponse> => {
+    return apiClient.get<GetPostResponse>(
+      `/posts?page=${page ?? 1}&pageSize=${pageSize ?? 10}`,
+    );
   },
   deletePost: async (id: string): Promise<DeletePostsResponse> => {
     return apiClient.delete<DeletePostsResponse>(`/posts/deletePost/${id}`);

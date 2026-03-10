@@ -16,9 +16,9 @@ const initialState = {
 
 export const getAllPosts = createAsyncThunk(
   "posts/getAllPosts",
-  async (_, { rejectWithValue }) => {
+  async (params: { page?: number; pageSize?: number }, { rejectWithValue }) => {
     try {
-      const res = await authApi.getPosts();
+      const res = await authApi.getPosts(params.page, params.pageSize);
       return res;
     } catch (error: any) {
       return rejectWithValue(
