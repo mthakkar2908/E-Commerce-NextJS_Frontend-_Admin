@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import ContactDialog from "./ContactDialog";
 import toast from "react-hot-toast";
 import routes from "@/src/common/routes";
+import { socket } from "@/src/utils/socket";
 
 const cards = [
   {
@@ -76,6 +77,32 @@ const Dashboard = () => {
   const getData = async () => {
     await dispatch(fetchCounts()).unwrap();
   };
+
+  useEffect(() => {
+    const handleUpdate = (message: string) => {
+      toast.success(message);
+
+      setTimeout(() => {
+        getData();
+      }, 700);
+    };
+
+    socket.on("userAdded", () => handleUpdate("New user added"));
+    socket.on("productAdded", () => handleUpdate("New product added"));
+    socket.on("postAdded", () => handleUpdate("New post added"));
+    socket.on("orderAdded", () => handleUpdate("New order received"));
+    socket.on("contactAdded", () => handleUpdate("New contact form submitted"));
+    socket.on("categoryAdded", () => handleUpdate("New category created"));
+
+    return () => {
+      socket.off("userAdded");
+      socket.off("productAdded");
+      socket.off("postAdded");
+      socket.off("orderAdded");
+      socket.off("contactAdded");
+      socket.off("categoryAdded");
+    };
+  }, []);
 
   useEffect(() => {
     getData();
