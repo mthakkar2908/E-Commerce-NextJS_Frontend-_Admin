@@ -16,7 +16,6 @@ import {
   DeleteProductResponse,
   DeleteTermsResponse,
   DeleteUserResponse,
-  GetAllPostResponse,
   GetAllProductsResponse,
   GetSubscribersList,
   getAllOrdersResponse,
