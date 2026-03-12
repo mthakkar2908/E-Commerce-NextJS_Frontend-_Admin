@@ -41,14 +41,12 @@ export default function RootLayout({
         isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-      {/* Sidebar */}
       <div
         className={`transition-all duration-300 ${collapsed ? "w-20" : "w-70"}`}
       >
         <SidebarPanel collapsed={collapsed} setCollapsed={setCollapsed} />
       </div>
 
-      {/* Content */}
       <div
         className={`flex-1 overflow-auto transition-all duration-300 ${
           isDark ? "bg-gray-800" : "bg-white"

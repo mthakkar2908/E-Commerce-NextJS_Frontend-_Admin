@@ -291,7 +291,6 @@ const CreatePostDialog = ({
                   className="h-32 w-full object-cover"
                 />
 
-                {/* Remove button */}
                 <button
                   type="button"
                   onClick={() =>
@@ -308,7 +307,6 @@ const CreatePostDialog = ({
           </div>
         )}
 
-        {/* Inputs */}
         <div className="mx-3">
           <div className="mt-4">
             <Label className="text-black dark:text-white">Post Name</Label>

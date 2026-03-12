@@ -158,7 +158,6 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen px-8 py-10">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-12">
           <h1
             className={`text-4xl font-bold tracking-tight ${
@@ -179,7 +178,6 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
           {cards.map((card, index) => (
             <Card
@@ -190,10 +188,8 @@ const Dashboard = () => {
                   : "bg-white border border-gray-200 shadow-sm"
               }`}
             >
-              {/* Glow Effect */}
               <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-linear-to-br from-cyan-500/10 to-indigo-500/10 pointer-events-none" />
 
-              {/* Title */}
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-lg font-semibold">{card.title}</h3>
@@ -211,7 +207,6 @@ const Dashboard = () => {
                 </button>
               </div>
 
-              {/* Count */}
               <div className="mt-6">
                 <p className="text-4xl font-bold tracking-tight">
                   {card.title === "Users"
@@ -228,7 +223,6 @@ const Dashboard = () => {
                 </p>
               </div>
 
-              {/* Actions */}
               <div className="mt-8 flex justify-between items-center">
                 {card.more && (
                   <button
@@ -242,7 +236,6 @@ const Dashboard = () => {
                 )}
               </div>
 
-              {/* Footer */}
               <div className="mt-6 flex gap-1 text-xs opacity-60">
                 <p>Count Updated</p>
                 {card.title === "Users"
@@ -262,7 +255,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Dialogs */}
       {openViewForUsers && (
         <UsersDialog
           open={openViewForUsers}

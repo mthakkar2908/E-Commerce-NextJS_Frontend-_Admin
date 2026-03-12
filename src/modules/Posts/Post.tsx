@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetAllPostResponse } from "@/src/api/endpoints/interfaces";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { deletePost, getAllPosts } from "@/src/redux/slices/postSlice";

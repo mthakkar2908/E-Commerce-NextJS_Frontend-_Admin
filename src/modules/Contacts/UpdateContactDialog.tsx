@@ -79,7 +79,6 @@ const UpdateContactDialog = ({
         </DialogTitle>
 
         <div className="space-y-4 mx-3">
-          {/* Name */}
           <div className="flex flex-col gap-2">
             <Label className="text-base font-semibold text-gray-700 dark:text-gray-400">
               Name
@@ -95,7 +94,6 @@ const UpdateContactDialog = ({
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-2">
             <Label className="text-base font-semibold text-gray-700 dark:text-gray-400">
               Email
@@ -111,7 +109,6 @@ const UpdateContactDialog = ({
             />
           </div>
 
-          {/* Title */}
           <div className="flex flex-col gap-2">
             <Label className="text-base font-semibold text-gray-700 dark:text-gray-400">
               Title
@@ -127,7 +124,6 @@ const UpdateContactDialog = ({
             />
           </div>
 
-          {/* Description */}
           <div className="flex flex-col gap-2">
             <Label className="text-base font-semibold text-gray-700 dark:text-gray-400">
               Description
@@ -165,7 +161,6 @@ const UpdateContactDialog = ({
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-3 mt-8 mx-3">
           <button
             onClick={() => setOpen(false)}

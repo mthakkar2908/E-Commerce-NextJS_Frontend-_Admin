@@ -120,7 +120,6 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
                  gap-4 mt-6 px-4 py-3 
                  border-t dark:border-gray-800"
         >
-          {/* Showing Info Section */}
           <div
             className="text-sm text-gray-600 dark:text-gray-300 
                    flex flex-col sm:flex-row 
@@ -157,8 +156,6 @@ const ProductsDialog: React.FC<ViewProductsProps> = ({ open, setOpen }) => {
               ))}
             </select>
           </div>
-
-          {/* Pagination Controls */}
           <div className="flex items-center justify-center md:justify-end gap-3">
             <button
               disabled={page === 1}

@@ -49,10 +49,8 @@ export default function InsideCategory() {
         </div>
       </div>
 
-      {/* Table Container */}
       <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
         <table className="w-full text-sm text-left">
-          {/* Table Head */}
           <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
             <tr>
               <th className="px-4 py-3 font-medium">Id</th>
@@ -63,7 +61,6 @@ export default function InsideCategory() {
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody className="bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200">
             {products?.map((prod) => (
               <tr
@@ -80,7 +77,6 @@ export default function InsideCategory() {
           </tbody>
         </table>
 
-        {/* Empty State */}
         {products.length === 0 && (
           <div className="p-6 text-center text-gray-500 dark:text-gray-400">
             No products found in this category.
