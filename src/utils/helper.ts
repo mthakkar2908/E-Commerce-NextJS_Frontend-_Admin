@@ -14,7 +14,6 @@ export const modules = {
 
     ["blockquote", "code-block"],
     ["link"],
-    // ['image', 'video'],
 
     ["clean"],
   ],
@@ -37,6 +36,4 @@ export const formats = [
   "blockquote",
   "code-block",
   "link",
-  // "image",
-  // "video",
 ];
