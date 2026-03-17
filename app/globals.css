@@ -229,7 +229,7 @@ select.input-style {
   scrollbar-width: unset !important;
 }
 .scrollbar-bold::-webkit-scrollbar {
-  @apply !w-[30px];
+  @apply w-7.5!;
 }
 
 .ql-toolbar {
