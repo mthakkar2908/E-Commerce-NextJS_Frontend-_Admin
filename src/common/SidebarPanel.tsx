@@ -51,7 +51,13 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
       toast.error((error as any) ?? "Failed to Logged out.");
     }
   };
+  const handleSiteClick = () => {
+    const url = process.env.NEXT_PUBLIC_SITE_URL;
 
+    if (url) {
+      window.open(url, "_blank");
+    }
+  };
   const isMobile = useMediaQuery({ maxWidth: 600 });
 
   useEffect(() => {
@@ -118,15 +124,24 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
     >
       <div className="flex flex-col w-full mb-4">
         {!collapsed && (
-          <h1
-            onClick={() => {
-              router.push(routes.dashboard);
-              localStorage.setItem("activeState", "dashboard");
-            }}
-            className="text-xl font-bold mb-4 cursor-pointer"
-          >
-            Admin Panel
-          </h1>
+          <div className="flex justify-between items-center">
+            <h1
+              onClick={() => {
+                router.push(routes.dashboard);
+                localStorage.setItem("activeState", "dashboard");
+              }}
+              className="text-xl font-bold mb-4 cursor-pointer"
+            >
+              Admin Panel
+            </h1>
+
+            <button
+              onClick={handleSiteClick}
+              className="px-2 py-1 cursor-pointer hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black  border dark:border-white border-black  rounded-3xl mb-2"
+            >
+              Go to site
+            </button>
+          </div>
         )}
 
         <div
