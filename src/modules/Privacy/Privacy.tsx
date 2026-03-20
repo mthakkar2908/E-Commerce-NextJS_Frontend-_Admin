@@ -25,11 +25,9 @@ export interface PrivacyResponse {
 
 const PrivacyPolicy = () => {
   const dispatch = useAppDispatch();
-
   const [privacyData, setPrivacyData] = useState("");
   const [privacyLoading, setPrivacyLoading] = useState(true);
   const [privacyId, setPrivacyId] = useState("");
-
   const [hasExistingPolicy, setHasExistingPolicy] = useState(false);
 
   useEffect(() => {
