@@ -6,7 +6,7 @@ interface ApiConfig {
 }
 
 const apiConfig: ApiConfig = {
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:2020/api",
   timeout: 10000,
 };
 
