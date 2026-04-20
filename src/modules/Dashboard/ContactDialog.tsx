@@ -30,7 +30,7 @@ const ContactDialog = ({ open, setOpen }: ContactDialogProps) => {
     if (open) {
       fetchContactForms();
     }
-  }, [dispatch, open]);
+  }, [open, dispatch]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
