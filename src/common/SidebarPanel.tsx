@@ -135,6 +135,10 @@ const SidebarPanel = ({ collapsed, setCollapsed }: SidebarProps) => {
               Admin Panel
             </h1>
 
+            <span className="relative flex size-3 left-27 bottom-5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+              <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+            </span>
             <button
               onClick={handleSiteClick}
               className="px-2 py-1 cursor-pointer hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black  border dark:border-white border-black  rounded-3xl mb-2"
